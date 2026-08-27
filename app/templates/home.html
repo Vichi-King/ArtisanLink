@@ -1,0 +1,1699 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+ArtisanLink | Skilled Hands. Trusted Service.
+{% endblock %}
+
+
+{% block content %}
+
+<div id="top"></div>
+
+<!-- =====================================================
+     HERO SECTION
+     ===================================================== -->
+
+<section class="hero">
+
+    <div class="container">
+
+        <div class="hero-content">
+
+            <!-- Eyebrow -->
+
+            <div class="hero-eyebrow">
+                Your Local Service Network
+            </div>
+
+
+            <!-- Main Heading -->
+
+            <h1 class="hero-title">
+
+                Skilled Hands.
+                <br>
+
+                <span>Trusted Service.</span>
+
+            </h1>
+
+
+            <!-- Description -->
+
+            <p class="hero-description">
+
+                Find skilled local artisans for the jobs that matter.
+                From repairs to craftsmanship, connect with trusted
+                professionals and get the job done right.
+
+            </p>
+
+
+            <!-- Action Buttons -->
+
+            <div class="hero-actions">
+
+                <a
+                    href="{{ url_for('artisans') }}"
+                    class="hero-btn hero-btn-primary"
+                >
+                    Find an Artisan
+                    <span class="ms-2">→</span>
+                </a>
+
+
+                {% if session.get("user_id") %}
+
+                    {% if session.get("user_role") == "artisan" %}
+
+                        <a
+                            href="{{ url_for('artisan_dashboard') }}"
+                            class="hero-btn hero-btn-secondary"
+                        >
+                            Open Dashboard
+                            <span class="ms-2">→</span>
+                        </a>
+
+                    {% else %}
+
+                        <a
+                            href="{{ url_for('become_artisan') }}"
+                            class="hero-btn hero-btn-secondary"
+                        >
+                            Become an Artisan
+                            <span class="ms-2">→</span>
+                        </a>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <a
+                        href="{{ url_for('register') }}"
+                        class="hero-btn hero-btn-secondary"
+                    >
+                        Become an Artisan
+                        <span class="ms-2">→</span>
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Trust Indicator -->
+
+            <div class="hero-trust">
+
+                <div class="hero-avatars">
+
+                    <div class="hero-avatar-more">
+                        10+
+                    </div>
+
+                </div>
+
+
+                <div class="hero-trust-text">
+
+                    <strong>
+                        Trusted Local Artisans
+                    </strong>
+
+                    <span>
+                        Skilled professionals on ArtisanLink
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         HERO STATS
+         ================================================= -->
+
+    <div class="hero-stats">
+
+        <!-- Stat 1 -->
+
+        <div class="hero-stat">
+
+            <div class="hero-stat-icon">
+                👥
+            </div>
+
+            <div>
+
+                <strong>
+                    10+
+                </strong>
+
+                <span>
+                    Trusted Artisans
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Stat 2 -->
+
+        <div class="hero-stat">
+
+            <div class="hero-stat-icon">
+                ✓
+            </div>
+
+            <div>
+
+                <strong>
+                    Quality
+                </strong>
+
+                <span>
+                    Skilled Professionals
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Stat 3 -->
+
+        <div class="hero-stat">
+
+            <div class="hero-stat-icon">
+                ⏱
+            </div>
+
+            <div>
+
+                <strong>
+                    Convenient
+                </strong>
+
+                <span>
+                    Simple Booking
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Stat 4 -->
+
+        <div class="hero-stat">
+
+            <div class="hero-stat-icon">
+                ★
+            </div>
+
+            <div>
+
+                <strong>
+                    Trusted
+                </strong>
+
+                <span>
+                    Ratings & Reviews
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SERVICES SHOWCASE
+     ===================================================== -->
+
+<section class="services-section" id="services">
+
+    <div class="container">
+
+        <!-- Section Header -->
+
+        <div class="services-header">
+
+            <div class="services-eyebrow">
+                OUR SERVICES
+            </div>
+
+            <h2 class="services-title">
+                What do you need <span>done?</span>
+            </h2>
+
+            <p class="services-description">
+                Skilled professionals for everyday jobs.
+                Find the right person for the work.
+            </p>
+
+        </div>
+
+
+        <!-- Services Grid -->
+
+        <div class="services-grid">
+
+
+            <!-- Carpentry -->
+
+            <a href="#" class="service-card">
+
+                <div class="service-image">
+
+                    <img
+                        src="{{ url_for('static', filename='images/services/carpentry.jpg') }}"
+                        alt="Carpentry services"
+                    >
+
+                    <div class="service-overlay"></div>
+
+                </div>
+
+                <div class="service-content">
+
+                    <h3>Carpentry</h3>
+
+                    <span class="service-link">
+                        Explore <span>→</span>
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Electrical -->
+
+            <a href="#" class="service-card">
+
+                <div class="service-image">
+
+                    <img
+                        src="{{ url_for('static', filename='images/services/electrical.jpg') }}"
+                        alt="Electrical services"
+                    >
+
+                    <div class="service-overlay"></div>
+
+                </div>
+
+                <div class="service-content">
+
+                    <h3>Electrical</h3>
+
+                    <span class="service-link">
+                        Explore <span>→</span>
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Plumbing -->
+
+            <a href="#" class="service-card">
+
+                <div class="service-image">
+
+                    <img
+                        src="{{ url_for('static', filename='images/services/plumbing.jpg') }}"
+                        alt="Plumbing services"
+                    >
+
+                    <div class="service-overlay"></div>
+
+                </div>
+
+                <div class="service-content">
+
+                    <h3>Plumbing</h3>
+
+                    <span class="service-link">
+                        Explore <span>→</span>
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Painting -->
+
+            <a href="#" class="service-card">
+
+                <div class="service-image">
+
+                    <img
+                        src="{{ url_for('static', filename='images/services/painting.jpg') }}"
+                        alt="Painting services"
+                    >
+
+                    <div class="service-overlay"></div>
+
+                </div>
+
+                <div class="service-content">
+
+                    <h3>Painting</h3>
+
+                    <span class="service-link">
+                        Explore <span>→</span>
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Jewelry Making -->
+
+            <a href="#" class="service-card">
+
+                <div class="service-image">
+
+                    <img
+                        src="{{ url_for('static', filename='images/services/jewelry.jpg') }}"
+                        alt="Jewelry making services"
+                    >
+
+                    <div class="service-overlay"></div>
+
+                </div>
+
+                <div class="service-content">
+
+                    <h3>Jewelry Making</h3>
+
+                    <span class="service-link">
+                        Explore <span>→</span>
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Pottery -->
+
+            <a href="#" class="service-card">
+
+                <div class="service-image">
+
+                    <img
+                        src="{{ url_for('static', filename='images/services/pottery.jpg') }}"
+                        alt="Pottery services"
+                    >
+
+                    <div class="service-overlay"></div>
+
+                </div>
+
+                <div class="service-content">
+
+                    <h3>Pottery</h3>
+
+                    <span class="service-link">
+                        Explore <span>→</span>
+                    </span>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <!-- View All -->
+
+        <div class="services-footer">
+
+            <a
+                href="{{ url_for('services') }}" class="why-cta">
+                Explore our services
+                <span>→</span>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     HOW IT WORKS
+     ===================================================== -->
+
+<section class="how-it-works" id="how-it-works">
+
+    <div class="container">
+
+        <!-- Section Header -->
+
+        <div class="how-header">
+
+            <div class="how-eyebrow">
+                HOW IT WORKS
+            </div>
+
+            <h2 class="how-title">
+                Getting the job done is <span>simple.</span>
+            </h2>
+
+            <p class="how-description">
+                From finding the right service to getting the job completed,
+                ArtisanLink makes the entire process simple and convenient.
+            </p>
+
+        </div>
+
+
+        <!-- Process -->
+
+        <div class="process">
+
+            <!-- Step 1 -->
+
+            <div class="process-step">
+
+                <div class="process-number">
+                    01
+                </div>
+
+                <div class="process-icon">
+                    🔎
+                </div>
+
+                <h3>
+                    Find a Service
+                </h3>
+
+                <p>
+                    Choose the type of service you need and
+                    explore available artisans.
+                </p>
+
+            </div>
+
+
+            <!-- Connector -->
+
+            <div class="process-connector"></div>
+
+
+            <!-- Step 2 -->
+
+            <div class="process-step">
+
+                <div class="process-number">
+                    02
+                </div>
+
+                <div class="process-icon">
+                    👤
+                </div>
+
+                <h3>
+                    Choose an Artisan
+                </h3>
+
+                <p>
+                    Browse artisan profiles, ratings and reviews
+                    to find the right professional.
+                </p>
+
+            </div>
+
+
+            <!-- Connector -->
+
+            <div class="process-connector"></div>
+
+
+            <!-- Step 3 -->
+
+            <div class="process-step">
+
+                <div class="process-number">
+                    03
+                </div>
+
+                <div class="process-icon">
+                    📅
+                </div>
+
+                <h3>
+                    Book the Job
+                </h3>
+
+                <p>
+                    Send your booking request and arrange
+                    the details of your service.
+                </p>
+
+            </div>
+
+
+            <!-- Connector -->
+
+            <div class="process-connector"></div>
+
+
+            <!-- Step 4 -->
+
+            <div class="process-step">
+
+                <div class="process-number">
+                    04
+                </div>
+
+                <div class="process-icon">
+                    ✓
+                </div>
+
+                <h3>
+                    Get It Done
+                </h3>
+
+                <p>
+                    Your artisan completes the job.
+                    Rate and review your experience.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Bottom CTA -->
+
+        <div class="how-cta">
+
+            <a href="{{ url_for('artisans') }}" class="how-cta-link">
+                Find an artisan
+                <span>→</span>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     FEATURED ARTISANS
+     ===================================================== -->
+
+<section class="featured-artisans">
+
+    <div class="container">
+
+        <!-- Section Header -->
+
+        <div class="featured-header">
+
+            <div class="featured-eyebrow">
+                FEATURED ARTISANS
+            </div>
+
+            <h2 class="featured-title">
+                Meet the skilled people
+                <span>behind ArtisanLink.</span>
+            </h2>
+
+            <p class="featured-description">
+                Discover trusted professionals ready to bring
+                their skills to your next project.
+            </p>
+
+        </div>
+
+
+        <!-- Artisan Grid -->
+
+        <div class="artisan-grid">
+
+
+            <!-- Artisan 1 -->
+
+            <article class="artisan-card">
+
+                <div class="artisan-image">
+
+                    <img
+                        src="{{ url_for('static', filename='images/artisans/artisan-1.jpg') }}"
+                        alt="Featured carpenter"
+                    >
+
+                    <div class="artisan-verified">
+                        ✓ Verified
+                    </div>
+
+                </div>
+
+
+                <div class="artisan-info">
+
+                    <h3>
+                        Chinedu Okafor
+                    </h3>
+
+                    <span class="artisan-trade">
+                        Carpenter
+                    </span>
+
+                    <div class="artisan-location">
+                        <span>⌖</span>
+                        Enugu
+                    </div>
+
+                    <div class="artisan-meta">
+
+                        <div class="artisan-rating">
+                            <span>★</span>
+                            4.9
+                        </div>
+
+                        <span class="artisan-reviews">
+                            24 reviews
+                        </span>
+
+                    </div>
+
+
+                    <a href="#" class="artisan-profile-link">
+                        View Profile
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <!-- Artisan 2 -->
+
+            <article class="artisan-card">
+
+                <div class="artisan-image">
+
+                    <img
+                        src="{{ url_for('static', filename='images/artisans/artisan-2.jpg') }}"
+                        alt="Featured electrician"
+                    >
+
+                    <div class="artisan-verified">
+                        ✓ Verified
+                    </div>
+
+                </div>
+
+
+                <div class="artisan-info">
+
+                    <h3>
+                        Emeka Nwosu
+                    </h3>
+
+                    <span class="artisan-trade">
+                        Electrician
+                    </span>
+
+                    <div class="artisan-location">
+                        <span>⌖</span>
+                        Agbani
+                    </div>
+
+                    <div class="artisan-meta">
+
+                        <div class="artisan-rating">
+                            <span>★</span>
+                            4.8
+                        </div>
+
+                        <span class="artisan-reviews">
+                            18 reviews
+                        </span>
+
+                    </div>
+
+
+                    <a href="#" class="artisan-profile-link">
+                        View Profile
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <!-- Artisan 3 -->
+
+            <article class="artisan-card">
+
+                <div class="artisan-image">
+
+                    <img
+                        src="{{ url_for('static', filename='images/artisans/artisan-3.jpg') }}"
+                        alt="Featured plumber"
+                    >
+
+                    <div class="artisan-verified">
+                        ✓ Verified
+                    </div>
+
+                </div>
+
+
+                <div class="artisan-info">
+
+                    <h3>
+                        Daniel Eze
+                    </h3>
+
+                    <span class="artisan-trade">
+                        Plumber
+                    </span>
+
+                    <div class="artisan-location">
+                        <span>⌖</span>
+                        Enugu
+                    </div>
+
+                    <div class="artisan-meta">
+
+                        <div class="artisan-rating">
+                            <span>★</span>
+                            5.0
+                        </div>
+
+                        <span class="artisan-reviews">
+                            31 reviews
+                        </span>
+
+                    </div>
+
+
+                    <a href="#" class="artisan-profile-link">
+                        View Profile
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <!-- Artisan 4 -->
+
+            <article class="artisan-card">
+
+                <div class="artisan-image">
+
+                    <img
+                        src="{{ url_for('static', filename='images/artisans/artisan-4.jpg') }}"
+                        alt="Featured painter"
+                    >
+
+                    <div class="artisan-verified">
+                        ✓ Verified
+                    </div>
+
+                </div>
+
+
+                <div class="artisan-info">
+
+                    <h3>
+                        Chukwudi Obi
+                    </h3>
+
+                    <span class="artisan-trade">
+                        Painter
+                    </span>
+
+                    <div class="artisan-location">
+                        <span>⌖</span>
+                        Agbani
+                    </div>
+
+                    <div class="artisan-meta">
+
+                        <div class="artisan-rating">
+                            <span>★</span>
+                            4.7
+                        </div>
+
+                        <span class="artisan-reviews">
+                            16 reviews
+                        </span>
+
+                    </div>
+
+
+                    <a href="#" class="artisan-profile-link">
+                        View Profile
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <!-- View All -->
+
+        <div class="featured-footer">
+
+            <a href="{{ url_for('artisans') }}" class="featured-view-all">
+                View all artisans
+                <span>→</span>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     WHY ARTISANLINK
+     ===================================================== -->
+
+<section class="why-artisanlink">
+
+    <div class="container">
+
+        <div class="why-layout">
+
+            <!-- Visual -->
+
+            <div class="why-visual">
+
+                <img
+                    src="{{ url_for('static', filename='images/why-artisanlink.jpg') }}"
+                    alt="Skilled artisan at work"
+                >
+
+                <div class="why-badge">
+
+                    <strong>
+                        Local Skills.
+                    </strong>
+
+                    <span>
+                        Trusted Service.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Content -->
+
+            <div class="why-content">
+
+                <div class="why-eyebrow">
+                    WHY ArtisanLink?
+                </div>
+
+                <h2 class="why-title">
+                    Local skills.
+                    <span>Greater confidence.</span>
+                </h2>
+
+                <p class="why-description">
+                    ArtisanLink makes it easier to discover skilled local
+                    professionals while giving customers the confidence
+                    to choose the right person for the job.
+                </p>
+
+
+                <!-- Benefits -->
+
+                <div class="why-benefits">
+
+                    <!-- Benefit 1 -->
+
+                    <div class="why-benefit">
+
+                        <div class="why-benefit-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Trusted Artisans
+                            </h3>
+
+                            <p>
+                                Connect with skilled professionals
+                                ready to get the job done.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Benefit 2 -->
+
+                    <div class="why-benefit">
+
+                        <div class="why-benefit-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Verified Profiles
+                            </h3>
+
+                            <p>
+                                Get useful information about artisans
+                                before making your choice.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Benefit 3 -->
+
+                    <div class="why-benefit">
+
+                        <div class="why-benefit-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Simple Booking
+                            </h3>
+
+                            <p>
+                                Find an artisan and send a service
+                                request without unnecessary steps.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Benefit 4 -->
+
+                    <div class="why-benefit">
+
+                        <div class="why-benefit-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Ratings & Reviews
+                            </h3>
+
+                            <p>
+                                Use customer feedback to make
+                                more informed decisions.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CTA -->
+
+                <a href="{{ url_for('services') }}" class="why-cta">
+                    Explore our services
+                    <span>→</span>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FINAL CTA
+     ===================================================== -->
+
+<section class="final-cta">
+
+    <div class="container">
+
+        <div class="final-cta-content">
+
+            <div class="final-cta-eyebrow">
+                GET STARTED
+            </div>
+
+            <h2 class="final-cta-title">
+                Ready to get the
+                <span>job done?</span>
+            </h2>
+
+            <p class="final-cta-description">
+                Find a skilled local artisan for your next project
+                and get the work done with confidence.
+            </p>
+
+
+            <!-- CTA Actions -->
+
+            <div class="final-cta-actions">
+
+                <!-- Find Artisan -->
+
+                <a
+                    href="{{ url_for('artisans') }}"
+                    class="final-cta-btn final-cta-btn-primary"
+                >
+                    Find an Artisan
+                    <span>→</span>
+                </a>
+
+
+                <!-- Secondary CTA -->
+
+                {% if session.get("user_id") %}
+
+                    {% if session.get("user_role") == "artisan" %}
+
+                        <a
+                            href="{{ url_for('artisan_dashboard') }}"
+                            class="final-cta-btn final-cta-btn-secondary"
+                        >
+                            Open Dashboard
+                            <span>→</span>
+                        </a>
+
+                    {% else %}
+
+                        <a
+                            href="{{ url_for('become_artisan') }}"
+                            class="final-cta-btn final-cta-btn-secondary"
+                        >
+                            Become an Artisan
+                            <span>→</span>
+                        </a>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <a
+                        href="{{ url_for('register') }}"
+                        class="final-cta-btn final-cta-btn-secondary"
+                    >
+                        Become an Artisan
+                        <span>→</span>
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer class="site-footer">
+
+    <div class="container">
+
+        <div class="footer-main">
+
+            <!-- Brand -->
+
+            <div class="footer-brand">
+
+                <a
+                    href="{{ url_for('home') }}"
+                    class="footer-logo"
+                >
+
+                    <img
+                        src="{{ url_for('static', filename='images/logo.png') }}"
+                        alt="ArtisanLink"
+                    >
+
+                </a>
+
+                <p class="footer-tagline">
+                    Skilled hands. Trusted service.
+                </p>
+
+                <p class="footer-description">
+                    Connecting customers with skilled local artisans
+                    for everyday jobs and professional services.
+                </p>
+
+            </div>
+
+
+            <!-- Platform -->
+
+            <div class="footer-column">
+
+                <h3>
+                    Platform
+                </h3>
+
+                <ul>
+
+                    <li>
+                        <a href="#services">
+                            Services
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ url_for('artisans') }}">
+                            Find an Artisan
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#how-it-works">
+                            How It Works
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            Reviews
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <!-- Company -->
+
+            <div class="footer-column">
+
+                <h3>
+                    Company
+                </h3>
+
+                <ul>
+
+                    <li>
+                        <a href="{{ url_for('about') }}">
+                            About Us
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ url_for('contact') }}">
+                            Contact
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ url_for('register') }}">
+                            Become an Artisan
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="#"
+                            class="help-trigger"
+                            id="helpCenterTrigger"
+                        >
+                            Help Center
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <!-- Account -->
+
+            <div class="footer-column">
+
+                <h3>
+                    Account
+                </h3>
+
+                <ul>
+
+                    {% if session.get("user_id") %}
+
+                        {% if session.get("user_role") == "artisan" %}
+
+                            <li>
+                                <a href="{{ url_for('artisan_dashboard') }}">
+                                    Dashboard
+                                </a>
+                            </li>
+
+                        {% else %}
+
+                            <li>
+                                <a href="#">
+                                    My Bookings
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ url_for('become_artisan') }}">
+                                    Become an Artisan
+                                </a>
+                            </li>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <li>
+                            <a href="{{ url_for('login') }}">
+                                Sign In
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ url_for('register') }}">
+                                Create Account
+                            </a>
+                        </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <!-- Footer Bottom -->
+
+        <div class="footer-bottom">
+
+            <p>
+                © 2026 ArtisanLink. All rights reserved.
+            </p>
+
+            <div class="footer-legal">
+
+                <a
+                    href="#"
+                    class="legal-trigger"
+                    data-legal="privacy"
+                >
+                    Privacy Policy
+                </a>
+
+                <a
+                    href="#"
+                    class="legal-trigger"
+                    data-legal="terms"
+                >
+                    Terms of Service
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+<!-- =====================================================
+     LEGAL NOTIFICATION OVERLAY
+     ===================================================== -->
+
+<div
+    class="legal-overlay"
+    id="legalOverlay"
+    aria-hidden="true"
+>
+
+    <div
+        class="legal-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="legalModalTitle"
+    >
+
+        <!-- Modal Header -->
+
+        <div class="legal-modal-header">
+
+            <div>
+
+                <span class="legal-modal-label">
+                    ARTISANLINK
+                </span>
+
+                <h2 id="legalModalTitle">
+                    Terms of Service
+                </h2>
+
+            </div>
+
+            <button
+                type="button"
+                class="legal-close"
+                id="legalClose"
+                aria-label="Close"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <!-- Modal Content -->
+
+        <div class="legal-modal-content" id="legalModalContent">
+
+            <!-- Content is inserted by JavaScript -->
+
+        </div>
+
+
+        <!-- Modal Footer -->
+
+        <div class="legal-modal-footer">
+
+            <span>
+                Last updated: August 2026
+            </span>
+
+            <button
+                type="button"
+                class="legal-understand"
+                id="legalUnderstand"
+            >
+                I Understand
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const overlay = document.getElementById("legalOverlay");
+        const modalTitle = document.getElementById("legalModalTitle");
+        const modalContent = document.getElementById("legalModalContent");
+        const closeButton = document.getElementById("legalClose");
+        const understandButton = document.getElementById("legalUnderstand");
+        const triggers = document.querySelectorAll(".legal-trigger");
+
+
+        const legalContent = {
+
+            privacy: {
+                title: "Privacy Policy",
+
+                content: `
+                    <h3>1. Information We Collect</h3>
+
+                    <p>
+                        ArtisanLink may collect information provided by users
+                        when they create an account, update their profile,
+                        request a service, or interact with the platform.
+                    </p>
+
+
+                    <h3>2. How We Use Your Information</h3>
+
+                    <p>
+                        Information collected through ArtisanLink is used
+                        to provide and improve our services, facilitate
+                        communication between customers and artisans, and
+                        maintain the security of the platform.
+                    </p>
+
+
+                    <h3>3. Information Sharing</h3>
+
+                    <p>
+                        ArtisanLink does not sell users' personal information.
+                        Information may be shared where necessary to provide
+                        requested services or comply with applicable laws.
+                    </p>
+
+
+                    <h3>4. Data Security</h3>
+
+                    <p>
+                        We take reasonable measures to protect information
+                        stored on the platform. However, no internet-based
+                        service can guarantee absolute security.
+                    </p>
+
+
+                    <h3>5. Your Responsibility</h3>
+
+                    <p>
+                        Users are responsible for keeping their account
+                        credentials secure and providing accurate information
+                        when using ArtisanLink.
+                    </p>
+                `
+            },
+
+
+            terms: {
+                title: "Terms of Service",
+
+                content: `
+                    <h3>1. Using ArtisanLink</h3>
+
+                    <p>
+                        ArtisanLink connects customers with local artisans
+                        and provides tools for discovering services,
+                        requesting jobs, and managing bookings.
+                    </p>
+
+
+                    <h3>2. User Accounts</h3>
+
+                    <p>
+                        Users must provide accurate information when creating
+                        an account. Each user is responsible for activity
+                        carried out through their account.
+                    </p>
+
+
+                    <h3>3. Artisan Services</h3>
+
+                    <p>
+                        Artisans are responsible for the quality, accuracy,
+                        pricing, and completion of the services they offer.
+                        Customers should review artisan information before
+                        making a booking.
+                    </p>
+
+
+                    <h3>4. Bookings</h3>
+
+                    <p>
+                        A booking request represents an agreement to arrange
+                        a service between the customer and artisan. Users
+                        should communicate clearly about the scope and
+                        requirements of each job.
+                    </p>
+
+
+                    <h3>5. Reviews</h3>
+
+                    <p>
+                        Reviews should reflect genuine experiences. Users
+                        must not submit misleading, abusive, or fraudulent
+                        reviews.
+                    </p>
+
+
+                    <h3>6. Platform Responsibility</h3>
+
+                    <p>
+                        ArtisanLink provides a platform for connecting users.
+                        We do not directly perform the services listed by
+                        independent artisans.
+                    </p>
+
+
+                    <h3>7. Acceptance</h3>
+
+                    <p>
+                        By using ArtisanLink, you agree to use the platform
+                        responsibly and comply with these terms.
+                    </p>
+                `
+            }
+
+        };
+
+
+        /* =================================================
+           OPEN MODAL
+           ================================================= */
+
+        triggers.forEach(function (trigger) {
+
+            trigger.addEventListener("click", function (event) {
+
+                event.preventDefault();
+
+                const type = trigger.dataset.legal;
+                const selected = legalContent[type];
+
+                if (!selected) {
+                    return;
+                }
+
+                modalTitle.textContent = selected.title;
+
+                modalContent.innerHTML = selected.content;
+
+                overlay.classList.add("active");
+
+                overlay.setAttribute("aria-hidden", "false");
+
+                document.body.style.overflow = "hidden";
+
+            });
+
+        });
+
+
+        /* =================================================
+           CLOSE MODAL
+           ================================================= */
+
+        function closeLegalModal() {
+
+            overlay.classList.remove("active");
+
+            overlay.setAttribute("aria-hidden", "true");
+
+            document.body.style.overflow = "";
+
+        }
+
+
+        closeButton.addEventListener(
+            "click",
+            closeLegalModal
+        );
+
+
+        understandButton.addEventListener(
+            "click",
+            closeLegalModal
+        );
+
+
+        /* Close when clicking backdrop */
+
+        overlay.addEventListener("click", function (event) {
+
+            if (event.target === overlay) {
+                closeLegalModal();
+            }
+
+        });
+
+
+        /* Close with Escape */
+
+        document.addEventListener("keydown", function (event) {
+
+            if (
+                event.key === "Escape" &&
+                overlay.classList.contains("active")
+            ) {
+                closeLegalModal();
+            }
+
+        });
+
+    });
+</script>
+
+<!-- BACK TO TOP BUTTON -->
+
+<a
+    href="#top"
+    class="back-to-top"
+    aria-label="Back to top"
+>
+    ↑
+</a>
+
+
+<script>
+
+    const backToTop =
+        document.querySelector(".back-to-top");
+
+    window.addEventListener("scroll", function () {
+
+        if (window.scrollY > 400) {
+
+            backToTop.classList.add("show");
+
+        } else {
+
+            backToTop.classList.remove("show");
+
+        }
+
+    });
+
+</script>
+
+{% endblock %}

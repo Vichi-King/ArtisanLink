@@ -1,0 +1,631 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create Account | ArtisanLink
+{% endblock %}
+
+{% block content %}
+
+<div class="auth-page">
+
+    <!-- ================================================
+         BRAND PANEL
+         ================================================ -->
+
+    <div class="auth-brand-panel">
+
+        <div class="auth-brand-content">
+
+            <div></div>
+
+            <div class="auth-brand-message">
+
+                <div class="auth-eyebrow">
+                    JOIN ARTISANLINK
+                </div>
+
+                <h1>
+                    {{ "Build your presence." if role == "artisan" else "Get things done." }}
+                </h1>
+
+                <p>
+                    {% if role == "artisan" %}
+
+                        Showcase your skills, connect with customers,
+                        and grow your work through ArtisanLink.
+
+                    {% else %}
+
+                        Find skilled professionals, discover trusted
+                        services, and get the job done right.
+
+                    {% endif %}
+                </p>
+
+            </div>
+
+
+            <div class="auth-brand-footer">
+
+                <span>
+                    Skilled Hands
+                </span>
+
+                <span>
+                    Trusted Service
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================
+         FORM PANEL
+         ================================================ -->
+
+    <div class="auth-form-panel">
+
+        <div class="auth-form">
+
+
+            <!-- ROLE SWITCHER -->
+
+            <div class="register-role-switch">
+
+                <a
+                    href="{{ url_for('register', role='customer') }}"
+                    class="
+                        register-role-option
+                        {% if role == 'customer' %}active{% endif %}
+                    "
+                >
+                    👤 Customer
+                </a>
+
+
+                <a
+                    href="{{ url_for('register', role='artisan') }}"
+                    class="
+                        register-role-option
+                        {% if role == 'artisan' %}active{% endif %}
+                    "
+                >
+                    🛠 Artisan
+                </a>
+
+            </div>
+
+
+            <div class="auth-form-header">
+
+                <span class="auth-form-eyebrow">
+                    {% if role == "artisan" %}
+                        ARTISAN REGISTRATION
+                    {% else %}
+                        CUSTOMER REGISTRATION
+                    {% endif %}
+                </span>
+
+                <h2>
+                    {% if role == "artisan" %}
+                        Become an Artisan
+                    {% else %}
+                        Create Your Account
+                    {% endif %}
+                </h2>
+
+                <p>
+                    {% if role == "artisan" %}
+                        Tell customers about yourself and your craft.
+                    {% else %}
+                        Join ArtisanLink and find the right professional.
+                    {% endif %}
+                </p>
+
+            </div>
+
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                id="registerForm"
+            >
+
+                <!-- ========================================
+                     ARTISAN PROFILE PICTURE
+                     ======================================== -->
+
+                {% if role == "artisan" %}
+
+                <div class="artisan-photo-upload">
+
+                    <label
+                        for="profile_picture"
+                        class="artisan-photo-box"
+                        id="photoBox"
+                    >
+
+                        <div
+                            class="artisan-photo-placeholder"
+                            id="photoPlaceholder"
+                        >
+
+                            <span class="photo-upload-icon">
+                                +
+                            </span>
+
+                            <strong>
+                                Upload Profile Photo
+                            </strong>
+
+                            <small>
+                                JPG, JPEG or PNG
+                            </small>
+
+                        </div>
+
+
+                        <img
+                            id="photoPreview"
+                            class="artisan-photo-preview"
+                            alt="Profile preview"
+                        >
+
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="profile_picture"
+                        name="profile_picture"
+                        accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                        hidden
+                    >
+
+                    <p class="photo-upload-note">
+                        Use a clear photo of yourself.
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- FULL NAME -->
+
+                <div class="auth-field">
+
+                    <label for="full_name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="full_name"
+                        name="full_name"
+                        placeholder="Enter your full name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="auth-field">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+                </div>
+
+
+                {% if role == "artisan" %}
+
+                <!-- PHONE -->
+
+                <div class="auth-field">
+
+                    <label for="phone">
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- CATEGORY -->
+
+                <div class="auth-field">
+
+                    <label for="category">
+                        Artisan Category
+                    </label>
+
+                    <select
+                        id="category"
+                        name="category"
+                        required
+                    >
+
+                        <option value="">
+                            Select your craft
+                        </option>
+
+                        <option value="Carpentry">
+                            Carpentry
+                        </option>
+
+                        <option value="Electrical">
+                            Electrical
+                        </option>
+
+                        <option value="Plumbing">
+                            Plumbing
+                        </option>
+
+                        <option value="Painting">
+                            Painting
+                        </option>
+
+                        <option value="Jewelry Making">
+                            Jewelry Making
+                        </option>
+
+                        <option value="Pottery">
+                            Pottery
+                        </option>
+
+                        <option value="Shoemaking">
+                            Shoemaking
+                        </option>
+
+                        <option value="Barbering">
+                            Barbering
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- EXPERIENCE -->
+
+                <div class="auth-field">
+
+                    <label for="experience">
+                        Years of Experience
+                    </label>
+
+                    <input
+                        type="number"
+                        id="experience"
+                        name="experience"
+                        min="0"
+                        placeholder="e.g. 5"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- LOCATION -->
+
+                <div class="auth-field">
+
+                    <label for="location">
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        placeholder="e.g. Agbani, Enugu"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="auth-field">
+
+                    <label for="description">
+                        About Your Work
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="4"
+                        placeholder="Briefly describe your skills and services..."
+                        required
+                    ></textarea>
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- PASSWORD -->
+
+                <div class="auth-field">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="auth-field">
+
+                    <label for="confirm_password">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Re-enter your password"
+                        required
+                    >
+
+                    <div
+                        id="passwordMessage"
+                        class="auth-password-message"
+                    ></div>
+
+                </div>
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    type="submit"
+                    class="auth-submit"
+                    id="registerButton"
+                >
+
+                    {% if role == "artisan" %}
+                        Create Artisan Account
+                    {% else %}
+                        Create Customer Account
+                    {% endif %}
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+            </form>
+
+
+            <p class="auth-switch">
+
+                Already have an account?
+
+                <a href="{{ url_for('login') }}">
+                    Login
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /* =============================================
+           PASSWORD MATCHING
+           ============================================= */
+
+        const password =
+            document.getElementById("password");
+
+        const confirmPassword =
+            document.getElementById("confirm_password");
+
+        const passwordMessage =
+            document.getElementById("passwordMessage");
+
+        const registerForm =
+            document.getElementById("registerForm");
+
+
+        function checkPasswords() {
+
+            if (!confirmPassword.value) {
+
+                passwordMessage.textContent = "";
+
+                return;
+            }
+
+
+            if (
+                password.value ===
+                confirmPassword.value
+            ) {
+
+                passwordMessage.textContent =
+                    "Passwords match.";
+
+                passwordMessage.className =
+                    "auth-password-message success";
+
+            } else {
+
+                passwordMessage.textContent =
+                    "Passwords do not match.";
+
+                passwordMessage.className =
+                    "auth-password-message error";
+
+            }
+
+        }
+
+
+        password.addEventListener(
+            "input",
+            checkPasswords
+        );
+
+        confirmPassword.addEventListener(
+            "input",
+            checkPasswords
+        );
+
+
+        registerForm.addEventListener(
+            "submit",
+            function (event) {
+
+                if (
+                    password.value !==
+                    confirmPassword.value
+                ) {
+
+                    event.preventDefault();
+
+                    passwordMessage.textContent =
+                        "Passwords do not match. Please check again.";
+
+                    passwordMessage.className =
+                        "auth-password-message error";
+
+                }
+
+            }
+        );
+
+
+        /* =============================================
+           PROFILE PHOTO PREVIEW
+           ============================================= */
+
+        const photoInput =
+            document.getElementById("profile_picture");
+
+        const photoPreview =
+            document.getElementById("photoPreview");
+
+        const photoPlaceholder =
+            document.getElementById("photoPlaceholder");
+
+
+        if (
+            photoInput &&
+            photoPreview &&
+            photoPlaceholder
+        ) {
+
+            photoInput.addEventListener(
+                "change",
+                function () {
+
+                    const file =
+                        this.files[0];
+
+                    if (!file) {
+                        return;
+                    }
+
+
+                    const allowedTypes = [
+                        "image/jpeg",
+                        "image/png"
+                    ];
+
+
+                    if (
+                        !allowedTypes.includes(
+                            file.type
+                        )
+                    ) {
+
+                        this.value = "";
+
+                        alert(
+                            "Please select a JPG, JPEG or PNG image."
+                        );
+
+                        return;
+                    }
+
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload = function (event) {
+
+                        photoPreview.src =
+                            event.target.result;
+
+                        photoPreview.classList.add(
+                            "active"
+                        );
+
+                        photoPlaceholder.classList.add(
+                            "hidden"
+                        );
+
+                    };
+
+
+                    reader.readAsDataURL(file);
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}

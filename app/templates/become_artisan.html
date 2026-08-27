@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}
+Become an Artisan | ArtisanLink
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-8 col-lg-6">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body p-4">
+
+                <h2 class="text-center mb-2">
+                    Become an Artisan
+                </h2>
+
+                <p class="text-center text-muted mb-4">
+                    Tell customers a little about yourself and the
+                    services you provide.
+                </p>
+
+
+                <form method="POST">
+
+                    <!-- Bio -->
+                    <div class="mb-3">
+
+                        <label for="bio" class="form-label">
+                            About You
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            id="bio"
+                            name="bio"
+                            rows="5"
+                            placeholder="Tell customers about your experience and expertise..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- Phone -->
+                    <div class="mb-3">
+
+                        <label for="phone" class="form-label">
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            class="form-control"
+                            id="phone"
+                            name="phone"
+                            placeholder="e.g. 08012345678"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Location -->
+                    <div class="mb-4">
+
+                        <label for="location" class="form-label">
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="location"
+                            name="location"
+                            placeholder="e.g. Agbani, Enugu State"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-dark w-100"
+                    >
+                        Create Artisan Profile
+                    </button>
+
+                </form>
+
+
+                <p class="text-center text-muted mt-3 mb-0">
+                    You can add your services after creating your profile.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

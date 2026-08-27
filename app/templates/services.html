@@ -1,0 +1,580 @@
+{% extends "base.html" %}
+
+{% block title %}
+ArtisanLink | Services
+{% endblock %}
+
+
+{% block content %}
+
+<!-- =====================================================
+     SERVICES HERO
+     ===================================================== -->
+
+<section class="services-page-hero">
+
+    <div class="container">
+
+        <div class="services-page-hero-content">
+
+            <div class="services-page-eyebrow">
+                ARTISANLINK SERVICES
+            </div>
+
+            <h1 class="services-page-title">
+                Find the right
+                <span>service.</span>
+            </h1>
+
+            <p class="services-page-description">
+                From everyday repairs to skilled craftsmanship,
+                discover local professionals ready to get the
+                job done.
+            </p>
+
+
+            <!-- Search -->
+
+            <div class="services-search">
+
+                <span class="services-search-icon">
+                    ⌕
+                </span>
+
+                <input
+                    type="text"
+                    id="serviceSearch"
+                    placeholder="What service do you need?"
+                    autocomplete="off"
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SERVICES GRID
+     ===================================================== -->
+
+<section class="services-directory">
+
+    <div class="container">
+
+        <!-- Section Header -->
+
+        <div class="services-directory-header">
+
+            <div>
+
+                <span class="services-directory-eyebrow">
+                    EXPLORE SERVICES
+                </span>
+
+                <h2>
+                    What do you need done?
+                </h2>
+
+            </div>
+
+            <p id="serviceCount">
+                6 services available
+            </p>
+
+        </div>
+
+
+        <!-- Service Grid -->
+
+        <div
+            class="services-grid"
+            id="servicesGrid"
+        >
+
+
+            <!-- Carpentry -->
+
+            <a
+                href="#"
+                class="service-card"
+                data-service="carpentry"
+            >
+
+                <div class="service-card-image">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='images/services/carpentry.jpg'
+                        ) }}"
+                        alt="Carpentry"
+                    >
+
+                    <div class="service-card-overlay"></div>
+
+                    <span class="service-card-number">
+                        01
+                    </span>
+
+                </div>
+
+                <div class="service-card-content">
+
+                    <div>
+
+                        <span class="service-card-category">
+                            HOME & FURNITURE
+                        </span>
+
+                        <h3>
+                            Carpentry
+                        </h3>
+
+                    </div>
+
+                    <span class="service-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Electrical -->
+
+            <a
+                href="#"
+                class="service-card"
+                data-service="electrical"
+            >
+
+                <div class="service-card-image">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='images/services/electrical.jpg'
+                        ) }}"
+                        alt="Electrical"
+                    >
+
+                    <div class="service-card-overlay"></div>
+
+                    <span class="service-card-number">
+                        02
+                    </span>
+
+                </div>
+
+                <div class="service-card-content">
+
+                    <div>
+
+                        <span class="service-card-category">
+                            ELECTRICAL
+                        </span>
+
+                        <h3>
+                            Electrical
+                        </h3>
+
+                    </div>
+
+                    <span class="service-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Plumbing -->
+
+            <a
+                href="#"
+                class="service-card"
+                data-service="plumbing"
+            >
+
+                <div class="service-card-image">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='images/services/plumbing.jpg'
+                        ) }}"
+                        alt="Plumbing"
+                    >
+
+                    <div class="service-card-overlay"></div>
+
+                    <span class="service-card-number">
+                        03
+                    </span>
+
+                </div>
+
+                <div class="service-card-content">
+
+                    <div>
+
+                        <span class="service-card-category">
+                            HOME MAINTENANCE
+                        </span>
+
+                        <h3>
+                            Plumbing
+                        </h3>
+
+                    </div>
+
+                    <span class="service-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Painting -->
+
+            <a
+                href="#"
+                class="service-card"
+                data-service="painting"
+            >
+
+                <div class="service-card-image">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='images/services/painting.jpg'
+                        ) }}"
+                        alt="Painting"
+                    >
+
+                    <div class="service-card-overlay"></div>
+
+                    <span class="service-card-number">
+                        04
+                    </span>
+
+                </div>
+
+                <div class="service-card-content">
+
+                    <div>
+
+                        <span class="service-card-category">
+                            HOME & DESIGN
+                        </span>
+
+                        <h3>
+                            Painting
+                        </h3>
+
+                    </div>
+
+                    <span class="service-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Jewelry -->
+
+            <a
+                href="#"
+                class="service-card"
+                data-service="jewelry"
+            >
+
+                <div class="service-card-image">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='images/services/jewelry.jpg'
+                        ) }}"
+                        alt="Jewelry Making"
+                    >
+
+                    <div class="service-card-overlay"></div>
+
+                    <span class="service-card-number">
+                        05
+                    </span>
+
+                </div>
+
+                <div class="service-card-content">
+
+                    <div>
+
+                        <span class="service-card-category">
+                            CRAFT & DESIGN
+                        </span>
+
+                        <h3>
+                            Jewelry Making
+                        </h3>
+
+                    </div>
+
+                    <span class="service-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Pottery -->
+
+            <a
+                href="#"
+                class="service-card"
+                data-service="pottery"
+            >
+
+                <div class="service-card-image">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='images/services/pottery.jpg'
+                        ) }}"
+                        alt="Pottery"
+                    >
+
+                    <div class="service-card-overlay"></div>
+
+                    <span class="service-card-number">
+                        06
+                    </span>
+
+                </div>
+
+                <div class="service-card-content">
+
+                    <div>
+
+                        <span class="service-card-category">
+                            CRAFT & DESIGN
+                        </span>
+
+                        <h3>
+                            Pottery
+                        </h3>
+
+                    </div>
+
+                    <span class="service-card-arrow">
+                        →
+                    </span>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <!-- Empty Search State -->
+
+        <div
+            class="services-empty"
+            id="servicesEmpty"
+        >
+
+            <div class="services-empty-icon">
+                ⌕
+            </div>
+
+            <h3>
+                No services found
+            </h3>
+
+            <p>
+                Try searching for another service.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SERVICE CTA
+     ===================================================== -->
+
+<section class="services-page-cta">
+
+    <div class="container">
+
+        <div class="services-page-cta-inner">
+
+            <div>
+
+                <span>
+                    CAN'T FIND WHAT YOU NEED?
+                </span>
+
+                <h2>
+                    Let us help you find the right artisan.
+                </h2>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('artisans') }}"
+                class="services-page-cta-button"
+            >
+                Find an Artisan
+                <span>→</span>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SERVICE SEARCH
+     ===================================================== -->
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const searchInput =
+                document.getElementById(
+                    "serviceSearch"
+                );
+
+            const cards =
+                document.querySelectorAll(
+                    ".service-card"
+                );
+
+            const emptyState =
+                document.getElementById(
+                    "servicesEmpty"
+                );
+
+            const count =
+                document.getElementById(
+                    "serviceCount"
+                );
+
+
+            searchInput.addEventListener(
+                "input",
+                function () {
+
+                    const query =
+                        searchInput.value
+                            .trim()
+                            .toLowerCase();
+
+                    let visible =
+                        0;
+
+
+                    cards.forEach(
+                        function (card) {
+
+                            const service =
+                                card.dataset.service;
+
+                            const title =
+                                card
+                                    .querySelector("h3")
+                                    .textContent
+                                    .toLowerCase();
+
+                            const category =
+                                card
+                                    .querySelector(
+                                        ".service-card-category"
+                                    )
+                                    .textContent
+                                    .toLowerCase();
+
+
+                            const matches =
+                                service.includes(query) ||
+                                title.includes(query) ||
+                                category.includes(query);
+
+
+                            if (matches) {
+
+                                card.style.display =
+                                    "";
+
+                                visible++;
+
+                            } else {
+
+                                card.style.display =
+                                    "none";
+
+                            }
+
+                        }
+                    );
+
+
+                    count.textContent =
+                        visible +
+                        (
+                            visible === 1
+                                ? " service available"
+                                : " services available"
+                        );
+
+
+                    if (visible === 0) {
+
+                        emptyState.classList.add(
+                            "active"
+                        );
+
+                    } else {
+
+                        emptyState.classList.remove(
+                            "active"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+</script>
+
+
+{% endblock %}

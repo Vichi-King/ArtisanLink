@@ -1,0 +1,429 @@
+{% extends "base.html" %}
+
+{% block title %}
+Contact Us | ArtisanLink
+{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     CONTACT HERO
+     ===================================================== -->
+
+<section class="contact-hero">
+
+    <div class="container">
+
+        <div class="contact-hero-content">
+
+            <div class="contact-eyebrow">
+                GET IN TOUCH
+            </div>
+
+            <h1>
+                Let's talk.
+                <br>
+                <span>We're here to help.</span>
+            </h1>
+
+            <p>
+                Have a question, need assistance, or want to
+                learn more about ArtisanLink? Send us a message
+                and we'll be happy to hear from you.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CONTACT SECTION
+     ===================================================== -->
+
+<section class="contact-section">
+
+    <div class="container">
+
+        <div class="contact-grid">
+
+            <!-- CONTACT INFORMATION -->
+
+            <div class="contact-info">
+
+                <div class="contact-section-label">
+                    CONTACT US
+                </div>
+
+                <h2>
+                    We'd love to
+                    <span>hear from you.</span>
+                </h2>
+
+                <p class="contact-intro">
+                    Whether you're looking for an artisan,
+                    interested in joining our platform, or
+                    simply have a question, we're here to help.
+                </p>
+
+
+                <!-- Email -->
+
+                <div class="contact-detail">
+
+                    <div class="contact-detail-icon">
+                        @
+                    </div>
+
+                    <div>
+                        <span>Email</span>
+
+                        <strong>
+                            support@artisanlink.com
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- Phone -->
+
+                <div class="contact-detail">
+
+                    <div class="contact-detail-icon">
+                        ☎
+                    </div>
+
+                    <div>
+                        <span>Phone</span>
+
+                        <strong>
+                            +234 800 000 0000
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- Location -->
+
+                <div class="contact-detail">
+
+                    <div class="contact-detail-icon">
+                        ◉
+                    </div>
+
+                    <div>
+                        <span>Location</span>
+
+                        <strong>
+                            Enugu, Nigeria
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- Availability -->
+
+                <div class="contact-availability">
+
+                    <div class="contact-status-dot"></div>
+
+                    <div>
+                        <strong>
+                            We're available
+                        </strong>
+
+                        <span>
+                            Monday – Saturday · 8:00 AM – 6:00 PM
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTACT FORM -->
+
+            <div class="contact-form-card">
+
+                <div class="contact-form-header">
+
+                    <span>
+                        SEND A MESSAGE
+                    </span>
+
+                    <h3>
+                        How can we help?
+                    </h3>
+
+                </div>
+
+
+                <form method="POST">
+
+                    <!-- Name -->
+
+                    <div class="contact-form-group">
+
+                        <label for="name">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter your full name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Email -->
+
+                    <div class="contact-form-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Subject -->
+
+                    <div class="contact-form-group">
+
+                        <label for="subject">
+                            Subject
+                        </label>
+
+                        <input
+                            type="text"
+                            id="subject"
+                            name="subject"
+                            placeholder="What is this about?"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Message -->
+
+                    <div class="contact-form-group">
+
+                        <label for="message">
+                            Message
+                        </label>
+
+                        <textarea
+                            id="message"
+                            name="message"
+                            rows="5"
+                            placeholder="Tell us how we can help..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- Submit -->
+
+                    <button
+                        type="submit"
+                        class="contact-submit"
+                    >
+                        Send Message
+                        <span>→</span>
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     QUICK HELP
+     ===================================================== -->
+
+<section class="contact-help">
+
+    <div class="container">
+
+        <div class="contact-help-heading">
+
+            <div class="contact-eyebrow">
+                NEED QUICK HELP?
+            </div>
+
+            <h2>
+                You might find your
+                <span>answer here.</span>
+            </h2>
+
+        </div>
+
+
+        <div class="contact-help-grid">
+
+            <!-- Help 1 -->
+
+            <a
+                href="{{ url_for('services') }}"
+                class="contact-help-card"
+            >
+
+                <div class="contact-help-icon">
+                    ◇
+                </div>
+
+                <div>
+
+                    <h3>
+                        Looking for a service?
+                    </h3>
+
+                    <p>
+                        Explore available services and
+                        find the right artisan for the job.
+                    </p>
+
+                    <span class="contact-help-link">
+                        Explore Services →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Help 2 -->
+
+            <a
+                href="{{ url_for('artisans') }}"
+                class="contact-help-card"
+            >
+
+                <div class="contact-help-icon">
+                    👤
+                </div>
+
+                <div>
+
+                    <h3>
+                        Looking for an artisan?
+                    </h3>
+
+                    <p>
+                        Browse skilled professionals and
+                        discover the right person for your job.
+                    </p>
+
+                    <span class="contact-help-link">
+                        Find an Artisan →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Help 3 -->
+
+            <a
+                href="javascript:void(0);"
+                class="contact-help-card"
+                onclick="openHelpCenter()"
+            >
+
+                <div class="contact-help-icon">
+                    ?
+                </div>
+
+                <div>
+
+                    <h3>
+                        Need platform help?
+                    </h3>
+
+                    <p>
+                        Visit our Help Center for answers
+                        to common questions.
+                    </p>
+
+                    <span class="contact-help-link">
+                        Visit Help Center →
+                    </span>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FINAL CTA
+     ===================================================== -->
+
+<section class="contact-cta">
+
+    <div class="container">
+
+        <div class="contact-cta-content">
+
+            <div class="contact-eyebrow">
+                ARTISANLINK
+            </div>
+
+            <h2>
+                Your next job starts
+                <span>with a connection.</span>
+            </h2>
+
+            <p>
+                Find skilled hands. Connect with confidence.
+                Get the job done right.
+            </p>
+
+            <a
+                href="{{ url_for('artisans') }}"
+                class="contact-cta-button"
+            >
+                Find an Artisan
+                <span>→</span>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+{% endblock %}
