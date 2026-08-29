@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Profile | ArtisanLink
+{% endblock %}
+
+{% block content %}
+<section class="artisan-edit-page">
+    <div class="container">
+        <div class="artisan-edit-header">
+            <div>
+                <a href="{{ url_for('artisan_dashboard') }}" class="artisan-back-link">← Back to dashboard</a>
+                <span class="artisan-dashboard-eyebrow">PROFILE SETTINGS</span>
+                <h1>Keep your profile<br><span>ready to be found.</span></h1>
+                <p>Update the information customers see when they discover your work.</p>
+            </div>
+            <div class="artisan-edit-header-mark" aria-hidden="true">✦</div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="artisan-edit-form">
+            <section class="artisan-edit-photo-card">
+                <div class="artisan-edit-photo">
+                    {% if user.profile_picture %}
+                        <img id="profilePreview" src="{{ url_for('static', filename='uploads/artisans/' ~ user.profile_picture) }}" alt="Current profile photo">
+                    {% else %}
+                        <span id="profileInitial">{{ user.full_name[:1]|upper }}</span>
+                        <img id="profilePreview" alt="New profile photo preview" hidden>
+                    {% endif %}
+                </div>
+                <div>
+                    <span>PROFILE PHOTO</span>
+                    <h2>Make a strong first impression</h2>
+                    <p>Use a clear JPG or PNG image. Your current photo stays in place until you save a replacement.</p>
+                    <label for="profile_picture" class="artisan-upload-button">Choose a new photo</label>
+                    <input type="file" id="profile_picture" name="profile_picture" accept=".jpg,.jpeg,.png,image/jpeg,image/png" hidden>
+                </div>
+            </section>
+
+            <section class="artisan-edit-fields-card">
+                <div class="artisan-form-section-heading">
+                    <span>PERSONAL DETAILS</span>
+                    <h2>The essentials</h2>
+                </div>
+                <div class="artisan-edit-fields-grid">
+                    <label>Full name<input type="text" name="full_name" value="{{ user.full_name }}" required></label>
+                    <label>Email address<input type="email" name="email" value="{{ user.email }}" required></label>
+                    <label>Phone number<input type="tel" name="phone" value="{{ artisan.phone or '' }}" required></label>
+                    <label>Location<input type="text" name="location" value="{{ artisan.location or '' }}" required></label>
+                </div>
+            </section>
+
+            <section class="artisan-edit-fields-card">
+                <div class="artisan-form-section-heading">
+                    <span>PROFESSIONAL DETAILS</span>
+                    <h2>Your craft</h2>
+                </div>
+                <div class="artisan-edit-fields-grid">
+                    <label>Artisan category
+                        <select name="category" required>
+                            <option value="">Select your craft</option>
+                            {% for option in ["Carpentry", "Electrical", "Plumbing", "Painting", "Jewelry Making", "Pottery", "Shoemaking", "Barbering"] %}
+                                <option value="{{ option }}" {% if artisan.category == option %}selected{% endif %}>{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label>Years of experience<input type="number" name="experience" value="{{ artisan.experience if artisan.experience is not none else '' }}" min="0" required></label>
+                    <label class="artisan-edit-wide">About your work<textarea name="bio" rows="5" required>{{ artisan.bio or '' }}</textarea></label>
+                </div>
+            </section>
+
+            <div class="artisan-edit-actions">
+                <a href="{{ url_for('artisan_dashboard') }}" class="artisan-cancel-action">Cancel</a>
+                <button type="submit" class="artisan-save-action">Save profile changes <span>→</span></button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    document.getElementById("profile_picture").addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const preview = document.getElementById("profilePreview");
+        const initial = document.getElementById("profileInitial");
+        preview.src = URL.createObjectURL(file);
+        preview.hidden = false;
+        if (initial) initial.hidden = true;
+    });
+</script>
+{% endblock %}

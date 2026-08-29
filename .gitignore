@@ -9,6 +9,7 @@ env/
 # Python cache
 __pycache__/
 *.py[cod]
+*.pyc
 
 # Flask
 instance/

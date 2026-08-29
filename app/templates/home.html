@@ -644,238 +644,28 @@ ArtisanLink | Skilled Hands. Trusted Service.
         </div>
 
 
-        <!-- Artisan Grid -->
-
         <div class="artisan-grid">
-
-
-            <!-- Artisan 1 -->
-
-            <article class="artisan-card">
-
-                <div class="artisan-image">
-
-                    <img
-                        src="{{ url_for('static', filename='images/artisans/artisan-1.jpg') }}"
-                        alt="Featured carpenter"
-                    >
-
-                    <div class="artisan-verified">
-                        ✓ Verified
+            {% for artisan, rating, review_count, completed_jobs, featured_score in featured_artisans %}
+                <article class="artisan-card">
+                    <div class="artisan-image">
+                        {% if artisan.user.profile_picture %}
+                            <img src="{{ url_for('static', filename='uploads/artisans/' ~ artisan.user.profile_picture) }}" alt="{{ artisan.user.full_name }}">
+                        {% else %}
+                            <div class="artisan-card-placeholder">{{ artisan.user.full_name[:1]|upper }}</div>
+                        {% endif %}
+                        {% if artisan.is_verified %}<div class="artisan-verified">✓ Verified</div>{% endif %}
                     </div>
-
-                </div>
-
-
-                <div class="artisan-info">
-
-                    <h3>
-                        Chinedu Okafor
-                    </h3>
-
-                    <span class="artisan-trade">
-                        Carpenter
-                    </span>
-
-                    <div class="artisan-location">
-                        <span>⌖</span>
-                        Enugu
+                    <div class="artisan-info">
+                        <h3>{{ artisan.user.full_name }}</h3>
+                        <span class="artisan-trade">{{ artisan.category or 'Local Service' }}</span>
+                        <div class="artisan-location"><span>⌖</span>{{ artisan.location or 'Location not set' }}</div>
+                        <div class="artisan-meta"><div class="artisan-rating"><span>★</span>{{ '%.1f'|format(rating|float) }}</div><span class="artisan-reviews">{{ review_count }} review{{ '' if review_count == 1 else 's' }}</span></div>
+                        <a href="{{ url_for('artisan_profile', artisan_id=artisan.id) }}" class="artisan-profile-link">View Profile <span>→</span></a>
                     </div>
-
-                    <div class="artisan-meta">
-
-                        <div class="artisan-rating">
-                            <span>★</span>
-                            4.9
-                        </div>
-
-                        <span class="artisan-reviews">
-                            24 reviews
-                        </span>
-
-                    </div>
-
-
-                    <a href="#" class="artisan-profile-link">
-                        View Profile
-                        <span>→</span>
-                    </a>
-
-                </div>
-
-            </article>
-
-
-            <!-- Artisan 2 -->
-
-            <article class="artisan-card">
-
-                <div class="artisan-image">
-
-                    <img
-                        src="{{ url_for('static', filename='images/artisans/artisan-2.jpg') }}"
-                        alt="Featured electrician"
-                    >
-
-                    <div class="artisan-verified">
-                        ✓ Verified
-                    </div>
-
-                </div>
-
-
-                <div class="artisan-info">
-
-                    <h3>
-                        Emeka Nwosu
-                    </h3>
-
-                    <span class="artisan-trade">
-                        Electrician
-                    </span>
-
-                    <div class="artisan-location">
-                        <span>⌖</span>
-                        Agbani
-                    </div>
-
-                    <div class="artisan-meta">
-
-                        <div class="artisan-rating">
-                            <span>★</span>
-                            4.8
-                        </div>
-
-                        <span class="artisan-reviews">
-                            18 reviews
-                        </span>
-
-                    </div>
-
-
-                    <a href="#" class="artisan-profile-link">
-                        View Profile
-                        <span>→</span>
-                    </a>
-
-                </div>
-
-            </article>
-
-
-            <!-- Artisan 3 -->
-
-            <article class="artisan-card">
-
-                <div class="artisan-image">
-
-                    <img
-                        src="{{ url_for('static', filename='images/artisans/artisan-3.jpg') }}"
-                        alt="Featured plumber"
-                    >
-
-                    <div class="artisan-verified">
-                        ✓ Verified
-                    </div>
-
-                </div>
-
-
-                <div class="artisan-info">
-
-                    <h3>
-                        Daniel Eze
-                    </h3>
-
-                    <span class="artisan-trade">
-                        Plumber
-                    </span>
-
-                    <div class="artisan-location">
-                        <span>⌖</span>
-                        Enugu
-                    </div>
-
-                    <div class="artisan-meta">
-
-                        <div class="artisan-rating">
-                            <span>★</span>
-                            5.0
-                        </div>
-
-                        <span class="artisan-reviews">
-                            31 reviews
-                        </span>
-
-                    </div>
-
-
-                    <a href="#" class="artisan-profile-link">
-                        View Profile
-                        <span>→</span>
-                    </a>
-
-                </div>
-
-            </article>
-
-
-            <!-- Artisan 4 -->
-
-            <article class="artisan-card">
-
-                <div class="artisan-image">
-
-                    <img
-                        src="{{ url_for('static', filename='images/artisans/artisan-4.jpg') }}"
-                        alt="Featured painter"
-                    >
-
-                    <div class="artisan-verified">
-                        ✓ Verified
-                    </div>
-
-                </div>
-
-
-                <div class="artisan-info">
-
-                    <h3>
-                        Chukwudi Obi
-                    </h3>
-
-                    <span class="artisan-trade">
-                        Painter
-                    </span>
-
-                    <div class="artisan-location">
-                        <span>⌖</span>
-                        Agbani
-                    </div>
-
-                    <div class="artisan-meta">
-
-                        <div class="artisan-rating">
-                            <span>★</span>
-                            4.7
-                        </div>
-
-                        <span class="artisan-reviews">
-                            16 reviews
-                        </span>
-
-                    </div>
-
-
-                    <a href="#" class="artisan-profile-link">
-                        View Profile
-                        <span>→</span>
-                    </a>
-
-                </div>
-
-            </article>
-
+                </article>
+            {% else %}
+                <p class="featured-empty">Featured artisan profiles will appear here soon.</p>
+            {% endfor %}
         </div>
 
 

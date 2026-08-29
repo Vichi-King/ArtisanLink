@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Mass Update Artisans | ArtisanLink{% endblock %}
+{% block content %}
+<section class="bulk-admin-page"><div class="container"><div class="bulk-admin-heading"><span class="artisan-dashboard-eyebrow">PRIVATE MANAGEMENT</span><h1>Mass-update profiles</h1><p>Match an artisan by email, then update only the columns you include.</p><a href="{{ url_for('bulk_artisans') }}">← Back to mass registration</a></div><div class="bulk-admin-card"><h2>CSV columns</h2><code>email,rating,verified,phone,location,category,experience,bio</code><p class="bulk-admin-note">Leave a column empty to retain its current value. Use yes/no for verification and ratings from 0 to 5.</p><form method="POST"><label>Profile update CSV<textarea name="update_csv" rows="13" required placeholder="email,rating,verified,phone,location,category,experience,bio&#10;ada@example.com,4.9,yes,,Enugu,Carpentry,7,"></textarea></label><button type="submit">Update artisan profiles <span>→</span></button></form>{% if errors %}<ul class="bulk-errors">{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}</div></div></section>
+{% endblock %}

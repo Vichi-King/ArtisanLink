@@ -2,6 +2,8 @@ from . import db
 
 
 class User(db.Model):
+    __tablename__ = "users"
+
     id = db.Column(db.Integer, primary_key=True)
 
     full_name = db.Column(
@@ -33,7 +35,7 @@ class User(db.Model):
     # Relationship with artisan profile
     artisan_profile = db.relationship(
         "Artisan",
-        backref="user",
+        back_populates="user",
         uselist=False,
         cascade="all, delete-orphan"
     )
@@ -59,6 +61,19 @@ class Artisan(db.Model):
     phone = db.Column(db.String(20), nullable=True)
 
     location = db.Column(db.String(100), nullable=True)
+
+    category = db.Column(db.String(100), nullable=True)
+
+    experience = db.Column(db.Integer, nullable=True)
+
+    is_verified = db.Column(db.Boolean, default=False, nullable=False)
+
+    manual_rating = db.Column(db.Numeric(2, 1), nullable=True)
+
+    user = db.relationship(
+        "User",
+        back_populates="artisan_profile"
+    )
 
     # Relationship with services
     services = db.relationship(
@@ -93,3 +108,24 @@ class Service(db.Model):
 
     def __repr__(self):
         return f"<Service {self.name}>"
+
+
+class Booking(db.Model):
+    __tablename__ = "bookings"
+
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    artisan_id = db.Column(db.Integer, db.ForeignKey("artisans.id"), nullable=False)
+    service_id = db.Column(db.Integer, db.ForeignKey("services.id"), nullable=False)
+    booking_date = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.String(30), default="pending")
+
+
+class Review(db.Model):
+    __tablename__ = "reviews"
+
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    artisan_id = db.Column(db.Integer, db.ForeignKey("artisans.id"), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    comment = db.Column(db.Text, nullable=True)
