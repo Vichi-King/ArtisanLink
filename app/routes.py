@@ -5,7 +5,7 @@ import uuid
 
 from flask import render_template, request, redirect, url_for, session, flash
 from flask_bcrypt import Bcrypt
-from sqlalchemy import func, case
+from sqlalchemy import func, case, or_
 
 from . import db
 from .models import User, Artisan, Service, Booking, Review
@@ -21,8 +21,8 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def ranked_artisans(limit=None, offset=None):
-    """Return artisans ordered by completed work, trust and profile quality."""
+def artisan_directory_query(search="", category="", location="", verified=False, sort="recommended"):
+    """Build the filtered artisan directory query used by the directory and AJAX loader."""
     completed_jobs = (
         db.session.query(
             Booking.artisan_id.label("artisan_id"),
@@ -60,14 +60,81 @@ def ranked_artisans(limit=None, offset=None):
         .join(User, Artisan.user_id == User.id)
         .outerjoin(completed_jobs, completed_jobs.c.artisan_id == Artisan.id)
         .outerjoin(review_stats, review_stats.c.artisan_id == Artisan.id)
-        .order_by(score.desc(), jobs.desc(), rating.desc(), Artisan.id.desc())
     )
 
+    if search:
+        term = f"%{search}%"
+        query = (
+            query.outerjoin(Service, Service.artisan_id == Artisan.id)
+            .filter(or_(
+                User.full_name.ilike(term),
+                User.email.ilike(term),
+                Artisan.category.ilike(term),
+                Artisan.location.ilike(term),
+                Artisan.bio.ilike(term),
+                Service.name.ilike(term),
+                Service.category.ilike(term)
+            ))
+            .distinct()
+        )
+
+    if category:
+        query = query.filter(Artisan.category == category)
+
+    if location:
+        query = query.filter(Artisan.location == location)
+
+    if verified:
+        query = query.filter(Artisan.is_verified.is_(True))
+
+    sort_options = {
+        "rating": (rating.desc(), reviews.desc(), Artisan.id.desc()),
+        "experience": (Artisan.experience.desc(), rating.desc(), Artisan.id.desc()),
+        "newest": (Artisan.id.desc(),),
+        "recommended": (score.desc(), jobs.desc(), rating.desc(), Artisan.id.desc()),
+    }
+    query = query.order_by(*sort_options.get(sort, sort_options["recommended"]))
+    return query
+
+
+def ranked_artisans(limit=None, offset=None):
+    """Return artisans ordered by completed work, trust and profile quality."""
+    query = artisan_directory_query()
     if offset:
         query = query.offset(offset)
     if limit:
         query = query.limit(limit)
     return query.all()
+
+
+def directory_filter_options():
+    """Return clean category and location options for the artisan directory filters."""
+    categories = [
+        value for (value,) in db.session.query(Artisan.category)
+        .filter(Artisan.category.isnot(None), Artisan.category != "")
+        .distinct()
+        .order_by(Artisan.category.asc())
+        .all()
+    ]
+    locations = [
+        value for (value,) in db.session.query(Artisan.location)
+        .filter(Artisan.location.isnot(None), Artisan.location != "")
+        .distinct()
+        .order_by(Artisan.location.asc())
+        .all()
+    ]
+    return categories, locations
+
+
+def get_directory_params():
+    search = request.args.get("q", "").strip()
+    category = request.args.get("category", "").strip()
+    location = request.args.get("location", "").strip()
+    verified = request.args.get("verified", "").lower() in {"1", "true", "yes", "on"}
+    sort = request.args.get("sort", "recommended").strip().lower()
+    if sort not in {"recommended", "rating", "experience", "newest"}:
+        sort = "recommended"
+    return search, category, location, verified, sort
 
 
 def login_required(view):
@@ -323,17 +390,38 @@ def register_routes(app):
     @app.route("/artisans")
     def artisans():
         page_size = 6
-        directory_artisans = ranked_artisans(limit=page_size)
-        total_artisans = Artisan.query.count()
-        return render_template("artisans.html", artisans=directory_artisans, total_artisans=total_artisans, has_more=total_artisans > page_size)
+        search, category, location, verified, sort = get_directory_params()
+        directory_query = artisan_directory_query(search, category, location, verified, sort)
+        total_artisans = directory_query.order_by(None).count()
+        directory_artisans = directory_query.limit(page_size).all()
+        categories, locations = directory_filter_options()
+        return render_template(
+            "artisans.html",
+            artisans=directory_artisans,
+            total_artisans=total_artisans,
+            has_more=total_artisans > page_size,
+            categories=categories,
+            locations=locations,
+            current_search=search,
+            current_category=category,
+            current_location=location,
+            current_verified=verified,
+            current_sort=sort,
+        )
 
     @app.route("/artisans/load")
     def load_artisans():
         page = max(request.args.get("page", 1, type=int), 1)
         page_size = 6
-        total_artisans = Artisan.query.count()
-        artisans = ranked_artisans(limit=page_size, offset=(page - 1) * page_size)
-        return {"html": render_template("_artisan_cards.html", artisans=artisans), "has_more": page * page_size < total_artisans}
+        search, category, location, verified, sort = get_directory_params()
+        directory_query = artisan_directory_query(search, category, location, verified, sort)
+        total_artisans = directory_query.order_by(None).count()
+        artisans = directory_query.offset((page - 1) * page_size).limit(page_size).all()
+        return {
+            "html": render_template("_artisan_cards.html", artisans=artisans),
+            "has_more": page * page_size < total_artisans,
+            "count": total_artisans,
+        }
 
     @app.route("/artisans/<int:artisan_id>")
     def artisan_profile(artisan_id):
@@ -468,7 +556,6 @@ def register_routes(app):
             flash("Your current password is incorrect. Your account was not deleted.", "danger")
             return redirect(url_for(dashboard_endpoint_for(user.role)))
 
-        role = user.role
         filename = user.profile_picture
         artisan = user.artisan_profile
 
