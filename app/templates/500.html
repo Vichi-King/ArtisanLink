@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Something Went Wrong | ArtisanLink{% endblock %}
+{% block content %}
+<section class="al-error-page" aria-labelledby="error-title">
+    <div class="al-error-card">
+        <span class="al-error-code">500</span>
+        <h1 id="error-title">Something went wrong.</h1>
+        <p>We hit an unexpected problem while processing your request. Please try again in a moment.</p>
+        <div class="al-error-actions">
+            <a href="{{ url_for('home') }}" class="al-error-primary">Back to Home</a>
+            <a href="{{ url_for('contact') }}" class="al-error-secondary">Contact Support</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
