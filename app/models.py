@@ -84,6 +84,20 @@ class BookingProposal(db.Model):
     booking = db.relationship("Booking", back_populates="proposals")
 
 
+class Notification(db.Model):
+    __tablename__ = "notifications"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    title = db.Column(db.String(150), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    notification_type = db.Column(db.String(30), default="info", nullable=False)
+    is_read = db.Column(db.Boolean, default=False, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.now(), nullable=False)
+
+    user = db.relationship("User", backref=db.backref("notifications", cascade="all, delete-orphan", lazy=True))
+
+
 class Review(db.Model):
     __tablename__ = "reviews"
 
