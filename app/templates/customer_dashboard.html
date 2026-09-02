@@ -1,24 +1,18 @@
 {% extends "base.html" %}
-
 {% block title %}Customer Dashboard | ArtisanLink{% endblock %}
-
 {% block content %}
 <section class="artisan-dashboard">
     <div class="container">
         <header class="artisan-dashboard-hero">
-            <div class="artisan-dashboard-intro"><span class="artisan-dashboard-eyebrow">MY DASHBOARD</span><h1>Welcome back,<br><span>{{ user.full_name }}.</span></h1><p>Track your booking requests and discover trusted artisans for your next job.</p></div>
+            <div class="artisan-dashboard-intro"><span class="artisan-dashboard-eyebrow">MY DASHBOARD</span><h1>Welcome back,<br><span>{{ user.full_name }}.</span></h1><p>Track your booking requests, stay updated and discover trusted artisans for your next job.</p></div>
             <div class="artisan-status-card"><span class="artisan-status-dot"></span><div><strong>{{ pending_total }} pending</strong><small>booking request{{ '' if pending_total == 1 else 's' }}</small></div></div>
         </header>
-        <div class="artisan-dashboard-stats" aria-label="Booking overview">
-            <div class="artisan-stat-card"><span>Total bookings</span><strong>{{ booking_total }}</strong></div>
-            <div class="artisan-stat-card"><span>Pending</span><strong>{{ pending_total }}</strong></div>
-            <div class="artisan-stat-card"><span>Completed</span><strong>{{ completed_total }}</strong></div>
-        </div>
+        <div class="artisan-dashboard-stats" aria-label="Booking overview"><div class="artisan-stat-card"><span>Total bookings</span><strong>{{ booking_total }}</strong></div><div class="artisan-stat-card"><span>Pending</span><strong>{{ pending_total }}</strong></div><div class="artisan-stat-card"><span>Completed</span><strong>{{ completed_total }}</strong></div></div>
         <div class="artisan-dashboard-grid">
             <article class="artisan-profile-card">
                 <div class="artisan-card-heading"><div><span>MY ACCOUNT</span><h2>Your details</h2></div><div class="artisan-avatar" aria-hidden="true">{% if user.profile_picture %}<img src="{{ url_for('static', filename='uploads/artisans/' ~ user.profile_picture) }}" alt="">{% else %}{{ user.full_name[:1]|upper }}{% endif %}</div></div>
                 <dl class="artisan-profile-details"><div><dt>Name</dt><dd>{{ user.full_name }}</dd></div><div><dt>Email</dt><dd>{{ user.email }}</dd></div></dl>
-                <div class="artisan-profile-actions"><a href="{{ url_for('my_bookings') }}" class="artisan-secondary-action">View all bookings <span>→</span></a><button type="button" class="al-dashboard-secondary-btn" data-bs-toggle="modal" data-bs-target="#passwordUpdateModal">Change password</button></div>
+                <div class="artisan-profile-actions"><a href="{{ url_for('my_bookings') }}" class="artisan-secondary-action">View all bookings <span>→</span></a><a href="{{ url_for('edit_account') }}" class="artisan-secondary-action">Account settings <span>→</span></a><a href="{{ url_for('notifications') }}" class="artisan-secondary-action">Notifications{% if unread_notifications %} ({{ unread_notifications }}){% endif %} <span>→</span></a><button type="button" class="al-dashboard-secondary-btn" data-bs-toggle="modal" data-bs-target="#passwordUpdateModal">Change password</button></div>
             </article>
             <article class="artisan-services-card">
                 <div class="artisan-card-heading"><div><span>RECENT ACTIVITY</span><h2>Your latest bookings</h2></div><span class="artisan-service-count">{{ recent_bookings|length }}</span></div>
