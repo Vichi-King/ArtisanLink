@@ -1,0 +1,33 @@
+.auth-account-links{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    margin-top:18px;
+    font-size:.88rem;
+    line-height:1.5;
+}
+
+.auth-account-links span{
+    color:#707070;
+}
+
+.auth-account-links a{
+    color:#0b0b0b;
+    font-weight:700;
+    text-decoration:none;
+    transition:color .3s ease;
+}
+
+.auth-account-links a:hover{
+    color:#f5b51b;
+}
+
+@media(max-width:520px){
+    .auth-account-links{
+        flex-direction:column;
+        justify-content:center;
+        text-align:center;
+        gap:8px;
+    }
+}
