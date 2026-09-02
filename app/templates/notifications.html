@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Notifications | ArtisanLink{% endblock %}
+{% block content %}
+<section class="al-dashboard-page">
+    <div class="container al-dashboard-shell">
+        <header class="al-page-header"><div><span>ACTIVITY CENTER</span><h1>Notifications</h1><p>Stay updated on bookings, proposals and important account activity.</p></div>{% if notifications %}<form method="POST" action="{{ url_for('mark_all_notifications_read') }}"><button class="al-dashboard-secondary-btn" type="submit">Mark all as read</button></form>{% endif %}</header>
+        <div class="al-notification-list">
+            {% for notification in notifications %}
+            <article class="al-notification-card {% if not notification.is_read %}unread{% endif %}">
+                <div class="al-notification-icon">{% if notification.notification_type == 'success' %}✓{% elif notification.notification_type == 'warning' %}!{% elif notification.notification_type == 'booking' %}⌁{% else %}i{% endif %}</div>
+                <div class="al-notification-body"><div class="al-notification-top"><h2>{{ notification.title }}</h2><time>{{ notification.created_at.strftime('%d %b %Y, %I:%M %p') }}</time></div><p>{{ notification.message }}</p>{% if not notification.is_read %}<form method="POST" action="{{ url_for('mark_notification_read', notification_id=notification.id) }}"><input type="hidden" name="next" value="{{ request.path }}"><button type="submit" class="al-notification-read">Mark as read</button></form>{% else %}<span class="al-read-label">Read</span>{% endif %}</div>
+            </article>
+            {% else %}
+            <div class="al-dashboard-empty"><div>✦</div><h2>You're all caught up</h2><p>New booking and account updates will appear here.</p></div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
