@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -32,16 +32,16 @@ def create_app():
 
     @app.errorhandler(404)
     def page_not_found(error):
-        return "Page not found.", 404
+        return render_template("404.html"), 404
 
     @app.errorhandler(413)
     def request_too_large(error):
-        return "The uploaded file is too large. Maximum size is 5 MB.", 413
+        return render_template("413.html"), 413
 
     @app.errorhandler(500)
     def internal_server_error(error):
         db.session.rollback()
-        return "Something went wrong. Please try again.", 500
+        return render_template("500.html"), 500
 
     with app.app_context():
         db.create_all()
