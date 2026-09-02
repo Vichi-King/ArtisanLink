@@ -124,6 +124,11 @@
     </div>
     <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const footers = document.querySelectorAll(".site-footer");
+        footers.forEach(function (footer, index) {
+            if (index > 0) footer.remove();
+        });
+
         const trigger = document.getElementById("helpCenterTrigger"), overlay = document.getElementById("helpOverlay"), close = document.getElementById("helpClose"), backTop = document.getElementById("backToTop");
         if (trigger && overlay) trigger.addEventListener("click", function (e) { e.preventDefault(); overlay.classList.add("active"); overlay.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden"; });
         function closeHelp() { if (!overlay) return; overlay.classList.remove("active"); overlay.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
