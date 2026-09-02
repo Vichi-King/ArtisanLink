@@ -4,7 +4,14 @@ from flask import render_template, request, redirect, url_for, session, flash
 from sqlalchemy import func
 
 from . import db
-from .models import User, Artisan, Service, Booking, Review, PlatformCategory
+from .models import User, Artisan, Booking, Review
+
+
+class PlatformCategory(db.Model):
+    __tablename__ = "platform_categories"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
 
 
 def admin_required(view):
@@ -21,111 +28,83 @@ def admin_required(view):
 
 
 def register_admin_routes(app):
-    @app.route("/admin")
+    @app.route("/admin/manage")
     @admin_required
-    def admin_dashboard():
+    def admin_manage():
         stats = {
             "users": User.query.count(),
             "customers": User.query.filter_by(role="customer").count(),
             "artisans": Artisan.query.count(),
             "verified_artisans": Artisan.query.filter_by(is_verified=True).count(),
             "bookings": Booking.query.count(),
-            "completed_bookings": Booking.query.filter_by(status="completed").count(),
+            "completed": Booking.query.filter_by(status="completed").count(),
             "reviews": Review.query.count(),
             "categories": PlatformCategory.query.count(),
         }
-        artisans = (
-            db.session.query(Artisan, User)
-            .join(User, Artisan.user_id == User.id)
-            .order_by(Artisan.is_verified.asc(), Artisan.id.desc())
-            .limit(20)
-            .all()
-        )
-        users = User.query.order_by(User.id.desc()).limit(20).all()
+        users = User.query.order_by(User.id.desc()).limit(30).all()
         reviews = (
             db.session.query(Review, User, Artisan)
             .join(User, Review.customer_id == User.id)
             .join(Artisan, Review.artisan_id == Artisan.id)
             .order_by(Review.id.desc())
-            .limit(20)
+            .limit(30)
             .all()
         )
         categories = PlatformCategory.query.order_by(PlatformCategory.name.asc()).all()
-        category_usage = dict(
+        usage = dict(
             db.session.query(Artisan.category, func.count(Artisan.id))
             .filter(Artisan.category.isnot(None), Artisan.category != "")
             .group_by(Artisan.category)
             .all()
         )
-        return render_template(
-            "admin_dashboard.html",
-            stats=stats,
-            artisans=artisans,
-            users=users,
-            reviews=reviews,
-            categories=categories,
-            category_usage=category_usage,
-        )
+        return render_template("admin_management.html", stats=stats, users=users, reviews=reviews, categories=categories, usage=usage)
 
-    @app.post("/admin/artisans/<int:artisan_id>/verify")
+    @app.post("/admin/manage/users/<int:user_id>/role")
     @admin_required
-    def admin_toggle_verification(artisan_id):
-        artisan = Artisan.query.get_or_404(artisan_id)
-        artisan.is_verified = not artisan.is_verified
-        db.session.commit()
-        state = "verified" if artisan.is_verified else "unverified"
-        flash(f"Artisan has been marked as {state}.", "success")
-        return redirect(url_for("admin_dashboard") + "#artisans")
-
-    @app.post("/admin/users/<int:user_id>/role")
-    @admin_required
-    def admin_change_role(user_id):
+    def admin_manage_role(user_id):
         user = User.query.get_or_404(user_id)
         if user.id == session.get("user_id"):
             flash("You cannot change your own administrator role.", "warning")
-            return redirect(url_for("admin_dashboard") + "#users")
-        new_role = request.form.get("role", "").strip()
-        if new_role not in {"customer", "artisan", "admin"}:
+            return redirect(url_for("admin_manage") + "#users")
+        role = request.form.get("role", "").strip()
+        if role not in {"customer", "artisan", "admin"}:
             flash("Invalid user role.", "danger")
-            return redirect(url_for("admin_dashboard") + "#users")
-        if new_role == "artisan" and not user.artisan_profile:
-            flash("A user must have an artisan profile before receiving the artisan role.", "warning")
-            return redirect(url_for("admin_dashboard") + "#users")
-        user.role = new_role
-        db.session.commit()
-        flash(f"{user.full_name}'s role has been updated.", "success")
-        return redirect(url_for("admin_dashboard") + "#users")
+        elif role == "artisan" and not user.artisan_profile:
+            flash("This user needs an artisan profile before receiving the artisan role.", "warning")
+        else:
+            user.role = role
+            db.session.commit()
+            flash(f"{user.full_name}'s role has been updated.", "success")
+        return redirect(url_for("admin_manage") + "#users")
 
-    @app.post("/admin/reviews/<int:review_id>/delete")
+    @app.post("/admin/manage/reviews/<int:review_id>/delete")
     @admin_required
-    def admin_delete_review(review_id):
+    def admin_manage_delete_review(review_id):
         review = Review.query.get_or_404(review_id)
         db.session.delete(review)
         db.session.commit()
         flash("Review removed by administrator.", "success")
-        return redirect(url_for("admin_dashboard") + "#reviews")
+        return redirect(url_for("admin_manage") + "#reviews")
 
-    @app.post("/admin/categories/add")
+    @app.post("/admin/manage/categories/add")
     @admin_required
-    def admin_add_category():
+    def admin_manage_add_category():
         name = request.form.get("name", "").strip()
         if not name:
             flash("Category name is required.", "warning")
-            return redirect(url_for("admin_dashboard") + "#categories")
-        existing = PlatformCategory.query.filter(func.lower(PlatformCategory.name) == name.lower()).first()
-        if existing:
+        elif PlatformCategory.query.filter(func.lower(PlatformCategory.name) == name.lower()).first():
             flash("That category already exists.", "warning")
-            return redirect(url_for("admin_dashboard") + "#categories")
-        db.session.add(PlatformCategory(name=name))
-        db.session.commit()
-        flash("Category added successfully.", "success")
-        return redirect(url_for("admin_dashboard") + "#categories")
+        else:
+            db.session.add(PlatformCategory(name=name))
+            db.session.commit()
+            flash("Category added successfully.", "success")
+        return redirect(url_for("admin_manage") + "#categories")
 
-    @app.post("/admin/categories/<int:category_id>/delete")
+    @app.post("/admin/manage/categories/<int:category_id>/delete")
     @admin_required
-    def admin_delete_category(category_id):
+    def admin_manage_delete_category(category_id):
         category = PlatformCategory.query.get_or_404(category_id)
         db.session.delete(category)
         db.session.commit()
         flash("Category removed from the platform catalogue.", "success")
-        return redirect(url_for("admin_dashboard") + "#categories")
+        return redirect(url_for("admin_manage") + "#categories")
