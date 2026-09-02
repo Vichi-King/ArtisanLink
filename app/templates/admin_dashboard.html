@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Panel | ArtisanLink
+{% endblock %}
+
+{% block content %}
+
+<section class="artisan-dashboard admin-dashboard">
+    <div class="container">
+        <header class="artisan-dashboard-hero">
+            <div class="artisan-dashboard-intro">
+                <span class="artisan-dashboard-eyebrow">ADMIN PANEL</span>
+                <h1>Platform <span>overview.</span></h1>
+                <p>Verify artisans, manage accounts, and keep an eye on how ArtisanLink is performing.</p>
+            </div>
+
+            <div class="artisan-status-card">
+                <span class="artisan-status-dot"></span>
+                <div>
+                    <strong>{{ unverified_count }} pending</strong>
+                    <small>artisan verification{{ '' if unverified_count == 1 else 's' }}</small>
+                </div>
+            </div>
+        </header>
+
+        <!-- Reports -->
+        <div class="admin-report-grid">
+            <div class="artisan-stat-card"><span>Customers</span><strong>{{ total_customers }}</strong></div>
+            <div class="artisan-stat-card"><span>Artisans</span><strong>{{ total_artisans }}</strong></div>
+            <div class="artisan-stat-card"><span>Verified</span><strong>{{ verified_artisans }}</strong></div>
+            <div class="artisan-stat-card"><span>Avg. rating</span><strong>★ {{ '%.1f'|format(average_rating) }}</strong></div>
+            <div class="artisan-stat-card"><span>Pending bookings</span><strong>{{ booking_counts.get('pending', 0) }}</strong></div>
+            <div class="artisan-stat-card"><span>Accepted bookings</span><strong>{{ booking_counts.get('accepted', 0) }}</strong></div>
+            <div class="artisan-stat-card"><span>Completed jobs</span><strong>{{ booking_counts.get('completed', 0) }}</strong></div>
+            <div class="artisan-stat-card"><span>Completed value</span><strong>₦{{ "{:,.0f}".format(completed_revenue) }}</strong></div>
+        </div>
+
+        <div class="artisan-dashboard-grid admin-dashboard-grid">
+            <!-- Artisan management -->
+            <article class="artisan-services-card">
+                <div class="artisan-card-heading">
+                    <div>
+                        <span>ARTISAN MANAGEMENT</span>
+                        <h2>Verify &amp; manage artisans</h2>
+                    </div>
+                    <span class="artisan-service-count">{{ all_artisans|length }}</span>
+                </div>
+
+                {% if all_artisans %}
+                    <div class="admin-artisan-list">
+                        {% for artisan in all_artisans %}
+                            <div class="admin-artisan-row">
+                                <div class="admin-artisan-identity">
+                                    <div class="artisan-avatar" aria-hidden="true">
+                                        {% if artisan.user.profile_picture %}
+                                            <img src="{{ url_for('static', filename='uploads/artisans/' ~ artisan.user.profile_picture) }}" alt="">
+                                        {% else %}
+                                            {{ artisan.user.full_name[:1]|upper }}
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <h3>{{ artisan.user.full_name }}</h3>
+                                        <p>{{ artisan.category or "No category set" }} · {{ artisan.user.email }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="admin-artisan-actions">
+                                    {% if artisan.is_verified %}
+                                        <span class="al-status-badge al-status-completed">Verified</span>
+                                    {% else %}
+                                        <span class="al-status-badge al-status-pending">Unverified</span>
+                                    {% endif %}
+
+                                    <form method="POST" action="{{ url_for('verify_artisan', artisan_id=artisan.id) }}">
+                                        <button type="submit" class="al-dashboard-secondary-btn al-table-action">
+                                            {{ "Unverify" if artisan.is_verified else "Verify" }}
+                                        </button>
+                                    </form>
+
+                                    <form method="POST" action="{{ url_for('remove_artisan', artisan_id=artisan.id) }}" onsubmit="return confirm('Remove {{ artisan.user.full_name }} from ArtisanLink? This deletes their account, services, bookings and reviews. This cannot be undone.');">
+                                        <button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-decline">Remove</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="artisan-empty-state">
+                        <div class="artisan-empty-icon">+</div>
+                        <h3>No artisans yet</h3>
+                        <p>Artisan accounts will appear here once people register.</p>
+                    </div>
+                {% endif %}
+            </article>
+
+            <!-- Recent bookings -->
+            <article class="artisan-profile-card">
+                <div class="artisan-card-heading">
+                    <div>
+                        <span>RECENT ACTIVITY</span>
+                        <h2>Latest bookings</h2>
+                    </div>
+                </div>
+
+                {% if recent_bookings %}
+                    <div class="artisan-service-list">
+                        {% for booking in recent_bookings %}
+                            <div class="artisan-service-item">
+                                <div class="artisan-service-icon">✦</div>
+                                <div>
+                                    <h3>{{ booking.customer.full_name }} → {{ booking.artisan.user.full_name }}</h3>
+                                    <p>{{ booking.service.name }} · {{ booking.booking_date.strftime('%d %b %Y') }}</p>
+                                </div>
+                                <strong class="al-status-badge al-status-{{ booking.status }}">{{ booking.status|capitalize }}</strong>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="artisan-empty-state">
+                        <div class="artisan-empty-icon">+</div>
+                        <h3>No bookings yet</h3>
+                        <p>Booking activity will show up here as it happens.</p>
+                    </div>
+                {% endif %}
+            </article>
+        </div>
+    </div>
+</section>
+
+{% include "_password_update_modal.html" %}
+
+{% endblock %}

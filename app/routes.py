@@ -1,15 +1,15 @@
+from datetime import datetime
+from functools import wraps
+
 from flask import app, render_template, request, redirect, url_for, session, flash
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 from sqlalchemy import func, case
-import csv
-import io
-import hmac
 import os
 import uuid
 
 from . import db
-from .models import User, Artisan, Booking, Review
+from .models import User, Artisan, Service, Booking, Review
 
 
 UPLOAD_FOLDER = os.path.join(
@@ -85,8 +85,40 @@ def ranked_artisans(limit=None, offset=None):
     return query.all()
 
 
-def has_bulk_access():
-    return bool(session.get("bulk_admin"))
+def login_required(view):
+    """Require any logged-in user."""
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+        if "user_id" not in session:
+            flash("Please log in to continue.", "warning")
+            return redirect(url_for("login"))
+        return view(*args, **kwargs)
+    return wrapped
+
+
+def role_required(*roles):
+    """Require a logged-in user whose role is one of `roles`."""
+    def decorator(view):
+        @wraps(view)
+        def wrapped(*args, **kwargs):
+            if "user_id" not in session:
+                flash("Please log in to continue.", "warning")
+                return redirect(url_for("login"))
+            if session.get("user_role") not in roles:
+                flash("You do not have access to that page.", "danger")
+                return redirect(url_for("home"))
+            return view(*args, **kwargs)
+        return wrapped
+    return decorator
+
+
+def dashboard_endpoint_for(role):
+    """Where a given role's dashboard lives - used for post-action redirects."""
+    if role == "admin":
+        return "admin_dashboard"
+    if role == "artisan":
+        return "artisan_dashboard"
+    return "customer_dashboard"
 
 
 def register_routes(app):
@@ -339,7 +371,12 @@ def register_routes(app):
                 session["user_role"] = user.role
 
                 flash("Login successful.", "success")
-                return redirect(url_for("home"))
+
+                if user.role == "admin":
+                    return redirect(url_for("admin_dashboard"))
+                if user.role == "artisan":
+                    return redirect(url_for("artisan_dashboard"))
+                return redirect(url_for("customer_dashboard"))
 
             flash("Invalid email or password.", "danger")
             return redirect(url_for("login"))
@@ -367,16 +404,28 @@ def register_routes(app):
             bio = request.form.get("bio", "").strip()
             phone = request.form.get("phone", "").strip()
             location = request.form.get("location", "").strip()
+            category = request.form.get("category", "").strip()
+            experience_value = request.form.get("experience", "").strip()
 
-            if not bio or not phone or not location:
+            if not all([bio, phone, location, category, experience_value]):
                 flash("All fields are required.", "danger")
+                return redirect(url_for("become_artisan"))
+
+            try:
+                experience = int(experience_value)
+                if experience < 0:
+                    raise ValueError
+            except ValueError:
+                flash("Years of experience must be a non-negative whole number.", "danger")
                 return redirect(url_for("become_artisan"))
 
             artisan = Artisan(
                 user_id=user.id,
                 bio=bio,
                 phone=phone,
-                location=location
+                location=location,
+                category=category,
+                experience=experience
             )
 
             user.role = "artisan"
@@ -577,120 +626,386 @@ def register_routes(app):
             reviews=reviews
         )
 
-    @app.route("/bulk-admin", methods=["GET", "POST"])
-    def bulk_admin_login():
-        access_key = os.getenv("ADMIN_ACCESS_KEY")
-        if not access_key:
-            flash("Bulk management is disabled. Set ADMIN_ACCESS_KEY first.", "warning")
-            return redirect(url_for("home"))
+    # ---------------------------------------------
+    # ARTISAN SERVICE MANAGEMENT
+    # ---------------------------------------------
+
+    @app.route("/artisan/services/add", methods=["GET", "POST"])
+    @role_required("artisan")
+    def add_service():
+        user = User.query.get(session["user_id"])
+        artisan = user.artisan_profile
+
+        if not artisan:
+            flash("Your artisan profile could not be found.", "danger")
+            return redirect(url_for("artisan_dashboard"))
 
         if request.method == "POST":
-            submitted_key = request.form.get("access_key", "")
-            if hmac.compare_digest(submitted_key, access_key):
-                session["bulk_admin"] = True
-                return redirect(url_for("bulk_artisans"))
-            flash("The management access key is incorrect.", "danger")
+            name = request.form.get("name", "").strip()
+            category = request.form.get("category", "").strip()
+            description = request.form.get("description", "").strip()
+            price_raw = request.form.get("price", "").strip()
 
-        return render_template("bulk_admin_login.html")
+            if not all([name, category, price_raw]):
+                flash("Please complete the service name, category and price.", "danger")
+                return redirect(url_for("add_service"))
 
-    @app.route("/bulk-admin/artisans", methods=["GET", "POST"])
-    def bulk_artisans():
-        if not has_bulk_access():
-            return redirect(url_for("bulk_admin_login"))
+            try:
+                price = float(price_raw)
+                if price <= 0:
+                    raise ValueError
+            except ValueError:
+                flash("Price must be a positive number.", "danger")
+                return redirect(url_for("add_service"))
 
-        if request.method == "POST":
-            rows = list(csv.DictReader(io.StringIO(request.form.get("artisan_csv", "").strip())))
-            created = 0
-            errors = []
-            for row_number, row in enumerate(rows, start=2):
-                full_name = row.get("full_name", "").strip()
-                email = row.get("email", "").strip().lower()
-                password = row.get("password", "")
-                phone = row.get("phone", "").strip()
-                location = row.get("location", "").strip()
-                category = row.get("category", "").strip()
-                bio = row.get("bio", "").strip()
-                try:
-                    experience = int(row.get("experience", "0"))
-                    rating = float(row.get("rating", "0") or 0)
-                except ValueError:
-                    errors.append(f"Row {row_number}: experience and rating must be numbers.")
-                    continue
+            service = Service(
+                artisan_id=artisan.id,
+                name=name,
+                category=category,
+                description=description or None,
+                price=price
+            )
 
-                if not all([full_name, email, password, phone, location, category, bio]) or experience < 0 or not 0 <= rating <= 5:
-                    errors.append(f"Row {row_number}: complete every required field and use a rating from 0 to 5.")
-                    continue
-                if User.query.filter_by(email=email).first():
-                    errors.append(f"Row {row_number}: {email} is already registered.")
-                    continue
-
-                verified = row.get("verified", "").strip().lower() in {"yes", "true", "1"}
-                user = User(
-                    full_name=full_name,
-                    email=email,
-                    password_hash=bcrypt.generate_password_hash(password).decode("utf-8"),
-                    role="artisan"
-                )
-                artisan = Artisan(
-                    user=user,
-                    phone=phone,
-                    location=location,
-                    category=category,
-                    bio=bio,
-                    experience=experience,
-                    is_verified=verified,
-                    manual_rating=rating or None
-                )
-                db.session.add_all([user, artisan])
-                created += 1
-
+            db.session.add(service)
             db.session.commit()
-            flash(f"Created {created} artisan account(s)." + (f" {len(errors)} row(s) were skipped." if errors else ""), "success")
-            return render_template("bulk_artisans.html", errors=errors)
 
-        return render_template("bulk_artisans.html", errors=[])
+            flash("Your service has been added.", "success")
+            return redirect(url_for("artisan_dashboard"))
 
-    @app.route("/bulk-admin/artisans/update", methods=["GET", "POST"])
-    def bulk_update_artisans():
-        if not has_bulk_access():
-            return redirect(url_for("bulk_admin_login"))
+        return render_template("service_form.html", service=None)
+
+    @app.route("/artisan/services/<int:service_id>/edit", methods=["GET", "POST"])
+    @role_required("artisan")
+    def edit_service(service_id):
+        user = User.query.get(session["user_id"])
+        artisan = user.artisan_profile
+        service = Service.query.get_or_404(service_id)
+
+        if not artisan or service.artisan_id != artisan.id:
+            flash("You can only manage your own services.", "danger")
+            return redirect(url_for("artisan_dashboard"))
 
         if request.method == "POST":
-            rows = list(csv.DictReader(io.StringIO(request.form.get("update_csv", "").strip())))
-            updated = 0
-            errors = []
-            for row_number, row in enumerate(rows, start=2):
-                email = row.get("email", "").strip().lower()
-                artisan = Artisan.query.join(User).filter(User.email == email).first()
-                if not artisan:
-                    errors.append(f"Row {row_number}: no artisan account exists for {email or 'that email'}.")
-                    continue
-                try:
-                    rating_value = row.get("rating", "").strip()
-                    if rating_value:
-                        rating = float(rating_value)
-                        if not 0 <= rating <= 5:
-                            raise ValueError
-                        artisan.manual_rating = rating
-                    experience_value = row.get("experience", "").strip()
-                    if experience_value:
-                        artisan.experience = max(int(experience_value), 0)
-                except ValueError:
-                    errors.append(f"Row {row_number}: rating must be 0–5 and experience must be a whole number.")
-                    continue
+            name = request.form.get("name", "").strip()
+            category = request.form.get("category", "").strip()
+            description = request.form.get("description", "").strip()
+            price_raw = request.form.get("price", "").strip()
 
-                if row.get("verified", "").strip():
-                    artisan.is_verified = row["verified"].strip().lower() in {"yes", "true", "1"}
-                for field in ("phone", "location", "category", "bio"):
-                    if row.get(field, "").strip():
-                        setattr(artisan, field, row[field].strip())
-                updated += 1
+            if not all([name, category, price_raw]):
+                flash("Please complete the service name, category and price.", "danger")
+                return redirect(url_for("edit_service", service_id=service_id))
 
+            try:
+                price = float(price_raw)
+                if price <= 0:
+                    raise ValueError
+            except ValueError:
+                flash("Price must be a positive number.", "danger")
+                return redirect(url_for("edit_service", service_id=service_id))
+
+            service.name = name
+            service.category = category
+            service.description = description or None
+            service.price = price
             db.session.commit()
-            flash(f"Updated {updated} artisan profile(s)." + (f" {len(errors)} row(s) were skipped." if errors else ""), "success")
-            return render_template("bulk_update_artisans.html", errors=errors)
 
-        return render_template("bulk_update_artisans.html", errors=[])
+            flash("Your service has been updated.", "success")
+            return redirect(url_for("artisan_dashboard"))
+
+        return render_template("service_form.html", service=service)
+
+    @app.route("/artisan/services/<int:service_id>/delete", methods=["POST"])
+    @role_required("artisan")
+    def delete_service(service_id):
+        user = User.query.get(session["user_id"])
+        artisan = user.artisan_profile
+        service = Service.query.get_or_404(service_id)
+
+        if not artisan or service.artisan_id != artisan.id:
+            flash("You can only manage your own services.", "danger")
+            return redirect(url_for("artisan_dashboard"))
+
+        has_bookings = Booking.query.filter_by(service_id=service.id).first() is not None
+        if has_bookings:
+            flash("This service has booking history and cannot be deleted. You can edit it instead.", "warning")
+            return redirect(url_for("artisan_dashboard"))
+
+        db.session.delete(service)
+        db.session.commit()
+
+        flash("Service removed.", "info")
+        return redirect(url_for("artisan_dashboard"))
+
+    # ---------------------------------------------
+    # CUSTOMER DASHBOARD
+    # ---------------------------------------------
+
+    @app.route("/dashboard")
+    @role_required("customer")
+    def customer_dashboard():
+        user = User.query.get(session["user_id"])
+
+        recent_bookings = (
+            Booking.query.filter_by(customer_id=user.id)
+            .order_by(Booking.id.desc())
+            .limit(5)
+            .all()
+        )
+
+        booking_total = Booking.query.filter_by(customer_id=user.id).count()
+        pending_total = Booking.query.filter_by(customer_id=user.id, status="pending").count()
+        completed_total = Booking.query.filter_by(customer_id=user.id, status="completed").count()
+
+        suggested_artisans = ranked_artisans(limit=4)
+
+        return render_template(
+            "customer_dashboard.html",
+            user=user,
+            recent_bookings=recent_bookings,
+            booking_total=booking_total,
+            pending_total=pending_total,
+            completed_total=completed_total,
+            suggested_artisans=suggested_artisans
+        )
+
+    # ---------------------------------------------
+    # PASSWORD UPDATE (shared by every role)
+    # ---------------------------------------------
+
+    @app.route("/account/change-password", methods=["POST"])
+    @login_required
+    def change_password():
+        user = User.query.get(session["user_id"])
+        redirect_endpoint = dashboard_endpoint_for(user.role)
+
+        current_password = request.form.get("current_password", "")
+        new_password = request.form.get("new_password", "")
+        confirm_new_password = request.form.get("confirm_new_password", "")
+
+        if not bcrypt.check_password_hash(user.password_hash, current_password):
+            flash("Your current password is incorrect.", "danger")
+            return redirect(url_for(redirect_endpoint))
+
+        if len(new_password) < 8:
+            flash("Your new password must be at least 8 characters long.", "danger")
+            return redirect(url_for(redirect_endpoint))
+
+        if new_password != confirm_new_password:
+            flash("New passwords do not match.", "danger")
+            return redirect(url_for(redirect_endpoint))
+
+        if bcrypt.check_password_hash(user.password_hash, new_password):
+            flash("Your new password must be different from your current password.", "danger")
+            return redirect(url_for(redirect_endpoint))
+
+        user.password_hash = bcrypt.generate_password_hash(new_password).decode("utf-8")
+        db.session.commit()
+
+        flash("Your password has been updated.", "success")
+        return redirect(url_for(redirect_endpoint))
+
+    # ---------------------------------------------
+    # BOOKING - CUSTOMER SIDE
+    # ---------------------------------------------
+
+    @app.route("/book/<int:artisan_id>/<int:service_id>", methods=["GET", "POST"])
+    @role_required("customer")
+    def book_service(artisan_id, service_id):
+        artisan = Artisan.query.get_or_404(artisan_id)
+        service = Service.query.filter_by(id=service_id, artisan_id=artisan_id).first_or_404()
+
+        if request.method == "POST":
+            booking_date_raw = request.form.get("booking_date", "").strip()
+
+            if not booking_date_raw:
+                flash("Please choose a date and time for your booking.", "danger")
+                return redirect(url_for("book_service", artisan_id=artisan_id, service_id=service_id))
+
+            try:
+                booking_date = datetime.strptime(booking_date_raw, "%Y-%m-%dT%H:%M")
+            except ValueError:
+                flash("Please provide a valid date and time.", "danger")
+                return redirect(url_for("book_service", artisan_id=artisan_id, service_id=service_id))
+
+            if booking_date < datetime.now():
+                flash("Booking date and time must be in the future.", "danger")
+                return redirect(url_for("book_service", artisan_id=artisan_id, service_id=service_id))
+
+            booking = Booking(
+                customer_id=session["user_id"],
+                artisan_id=artisan_id,
+                service_id=service_id,
+                booking_date=booking_date,
+                status="pending"
+            )
+
+            db.session.add(booking)
+            db.session.commit()
+
+            flash("Your booking request has been sent to the artisan.", "success")
+            return redirect(url_for("my_bookings"))
+
+        return render_template("book_service.html", artisan=artisan, service=service)
+
+    @app.route("/bookings")
+    @role_required("customer")
+    def my_bookings():
+        bookings = (
+            Booking.query.filter_by(customer_id=session["user_id"])
+            .order_by(Booking.booking_date.desc())
+            .all()
+        )
+        return render_template("my_bookings.html", bookings=bookings)
+
+    @app.route("/bookings/<int:booking_id>/cancel", methods=["POST"])
+    @role_required("customer")
+    def cancel_booking(booking_id):
+        booking = Booking.query.get_or_404(booking_id)
+
+        if booking.customer_id != session["user_id"]:
+            flash("You can only cancel your own bookings.", "danger")
+            return redirect(url_for("my_bookings"))
+
+        if booking.status != "pending":
+            flash("Only pending bookings can be cancelled.", "warning")
+            return redirect(url_for("my_bookings"))
+
+        booking.status = "cancelled"
+        db.session.commit()
+
+        flash("Your booking request has been cancelled.", "info")
+        return redirect(url_for("my_bookings"))
+
+    # ---------------------------------------------
+    # BOOKING - ARTISAN SIDE
+    # ---------------------------------------------
+
+    @app.route("/artisan/bookings")
+    @role_required("artisan")
+    def artisan_bookings():
+        user = User.query.get(session["user_id"])
+        artisan = user.artisan_profile
+
+        bookings = (
+            Booking.query.filter_by(artisan_id=artisan.id)
+            .order_by(Booking.booking_date.desc())
+            .all()
+            if artisan else []
+        )
+
+        return render_template("artisan_bookings.html", bookings=bookings, artisan=artisan)
+
+    @app.route("/artisan/bookings/<int:booking_id>/respond", methods=["POST"])
+    @role_required("artisan")
+    def respond_booking(booking_id):
+        booking = Booking.query.get_or_404(booking_id)
+        user = User.query.get(session["user_id"])
+        artisan = user.artisan_profile
+
+        if not artisan or booking.artisan_id != artisan.id:
+            flash("You can only manage your own booking requests.", "danger")
+            return redirect(url_for("artisan_bookings"))
+
+        action = request.form.get("action")
+
+        # action -> (status required beforehand, status after)
+        valid_transitions = {
+            "accept": ("pending", "accepted"),
+            "decline": ("pending", "declined"),
+            "complete": ("accepted", "completed"),
+        }
+
+        if action not in valid_transitions:
+            flash("Unrecognised booking action.", "danger")
+            return redirect(url_for("artisan_bookings"))
+
+        required_status, new_status = valid_transitions[action]
+
+        if booking.status != required_status:
+            flash("This booking has already moved on and can no longer be updated that way.", "warning")
+            return redirect(url_for("artisan_bookings"))
+
+        booking.status = new_status
+        db.session.commit()
+
+        flash(f"Booking marked as {new_status}.", "success")
+        return redirect(url_for("artisan_bookings"))
+
+    # ---------------------------------------------
+    # ADMIN
+    # ---------------------------------------------
+
+    @app.route("/admin/dashboard")
+    @role_required("admin")
+    def admin_dashboard():
+        total_customers = User.query.filter_by(role="customer").count()
+        total_artisans = Artisan.query.count()
+        verified_artisans = Artisan.query.filter_by(is_verified=True).count()
+
+        booking_counts = dict(
+            db.session.query(Booking.status, func.count(Booking.id))
+            .group_by(Booking.status)
+            .all()
+        )
+
+        completed_revenue = (
+            db.session.query(func.coalesce(func.sum(Service.price), 0))
+            .join(Booking, Booking.service_id == Service.id)
+            .filter(Booking.status == "completed")
+            .scalar()
+        )
+
+        average_rating = db.session.query(func.coalesce(func.avg(Review.rating), 0)).scalar()
+
+        all_artisans = (
+            Artisan.query.join(User)
+            .order_by(Artisan.is_verified.asc(), Artisan.id.desc())
+            .all()
+        )
+
+        recent_bookings = Booking.query.order_by(Booking.id.desc()).limit(8).all()
+
+        return render_template(
+            "admin_dashboard.html",
+            total_customers=total_customers,
+            total_artisans=total_artisans,
+            verified_artisans=verified_artisans,
+            unverified_count=total_artisans - verified_artisans,
+            booking_counts=booking_counts,
+            completed_revenue=completed_revenue,
+            average_rating=float(average_rating or 0),
+            all_artisans=all_artisans,
+            recent_bookings=recent_bookings
+        )
+
+    @app.route("/admin/artisans/<int:artisan_id>/verify", methods=["POST"])
+    @role_required("admin")
+    def verify_artisan(artisan_id):
+        artisan = Artisan.query.get_or_404(artisan_id)
+        artisan.is_verified = not artisan.is_verified
+        db.session.commit()
+
+        status_text = "verified" if artisan.is_verified else "unverified"
+        flash(f"{artisan.user.full_name} is now {status_text}.", "success")
+        return redirect(url_for("admin_dashboard"))
+
+    @app.route("/admin/artisans/<int:artisan_id>/remove", methods=["POST"])
+    @role_required("admin")
+    def remove_artisan(artisan_id):
+        artisan = Artisan.query.get_or_404(artisan_id)
+        user = artisan.user
+        name = user.full_name
+
+        # Remove records that reference this artisan first so the delete
+        # does not fail on a foreign-key constraint.
+        Review.query.filter_by(artisan_id=artisan.id).delete()
+        Booking.query.filter_by(artisan_id=artisan.id).delete()
+
+        db.session.delete(user)  # cascades to the Artisan profile
+        db.session.commit()
+
+        flash(f"{name}'s account has been removed from ArtisanLink.", "success")
+        return redirect(url_for("admin_dashboard"))
 
     @app.route("/about")
     def about():

@@ -75,6 +75,16 @@ ArtisanLink | Skilled Hands. Trusted Service.
                             <span class="ms-2">→</span>
                         </a>
 
+                    {% elif session.get("user_role") == "admin" %}
+
+                        <a
+                            href="{{ url_for('admin_dashboard') }}"
+                            class="hero-btn hero-btn-secondary"
+                        >
+                            Open Admin Panel
+                            <span class="ms-2">→</span>
+                        </a>
+
                     {% else %}
 
                         <a
@@ -90,7 +100,7 @@ ArtisanLink | Skilled Hands. Trusted Service.
                 {% else %}
 
                     <a
-                        href="{{ url_for('register') }}"
+                        href="{{ url_for('register', role='artisan') }}"
                         class="hero-btn hero-btn-secondary"
                     >
                         Become an Artisan
@@ -910,6 +920,16 @@ ArtisanLink | Skilled Hands. Trusted Service.
                             <span>→</span>
                         </a>
 
+                    {% elif session.get("user_role") == "admin" %}
+
+                        <a
+                            href="{{ url_for('admin_dashboard') }}"
+                            class="final-cta-btn final-cta-btn-secondary"
+                        >
+                            Open Admin Panel
+                            <span>→</span>
+                        </a>
+
                     {% else %}
 
                         <a
@@ -925,7 +945,7 @@ ArtisanLink | Skilled Hands. Trusted Service.
                 {% else %}
 
                     <a
-                        href="{{ url_for('register') }}"
+                        href="{{ url_for('register', role='artisan') }}"
                         class="final-cta-btn final-cta-btn-secondary"
                     >
                         Become an Artisan
@@ -1042,7 +1062,7 @@ ArtisanLink | Skilled Hands. Trusted Service.
                     </li>
 
                     <li>
-                        <a href="{{ url_for('register') }}">
+                        <a href="{{ url_for('register', role='artisan') }}">
                             Become an Artisan
                         </a>
                     </li>
@@ -1082,10 +1102,30 @@ ArtisanLink | Skilled Hands. Trusted Service.
                                 </a>
                             </li>
 
+                            <li>
+                                <a href="{{ url_for('artisan_bookings') }}">
+                                    Booking Requests
+                                </a>
+                            </li>
+
+                        {% elif session.get("user_role") == "admin" %}
+
+                            <li>
+                                <a href="{{ url_for('admin_dashboard') }}">
+                                    Admin Panel
+                                </a>
+                            </li>
+
                         {% else %}
 
                             <li>
-                                <a href="#">
+                                <a href="{{ url_for('customer_dashboard') }}">
+                                    Dashboard
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ url_for('my_bookings') }}">
                                     My Bookings
                                 </a>
                             </li>
@@ -1107,7 +1147,7 @@ ArtisanLink | Skilled Hands. Trusted Service.
                         </li>
 
                         <li>
-                            <a href="{{ url_for('register') }}">
+                            <a href="{{ url_for('register', role='customer') }}">
                                 Create Account
                             </a>
                         </li>

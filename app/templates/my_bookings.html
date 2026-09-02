@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Bookings | ArtisanLink
+{% endblock %}
+
+{% block content %}
+
+<section class="bookings-list-section">
+    <div class="container">
+        <header class="bookings-list-header">
+            <div>
+                <span class="artisan-dashboard-eyebrow">MY BOOKINGS</span>
+                <h1>Your booking requests</h1>
+            </div>
+            <a href="{{ url_for('artisans') }}" class="hero-btn hero-btn-secondary">
+                Find an artisan
+                <span class="ms-2">→</span>
+            </a>
+        </header>
+
+        {% if bookings %}
+            <div class="bookings-table-wrap">
+                <table class="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>Artisan</th>
+                            <th>Service</th>
+                            <th>Date &amp; time</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('artisan_profile', artisan_id=booking.artisan.id) }}">{{ booking.artisan.user.full_name }}</a>
+                                </td>
+                                <td>{{ booking.service.name }}</td>
+                                <td>{{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</td>
+                                <td><span class="al-status-badge al-status-{{ booking.status }}">{{ booking.status|capitalize }}</span></td>
+                                <td>
+                                    {% if booking.status == "pending" %}
+                                        <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.id) }}" onsubmit="return confirm('Cancel this booking request?');">
+                                            <button type="submit" class="al-dashboard-secondary-btn al-table-action">Cancel</button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="artisan-empty-state">
+                <div class="artisan-empty-icon">+</div>
+                <h3>No bookings yet</h3>
+                <p>Once you request a service, it will show up here.</p>
+                <a href="{{ url_for('artisans') }}" class="artisan-primary-action">Find an artisan <span>→</span></a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

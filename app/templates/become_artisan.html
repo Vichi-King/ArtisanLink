@@ -6,103 +6,82 @@ Become an Artisan | ArtisanLink
 
 {% block content %}
 
-<div class="row justify-content-center">
+<section class="booking-form-section">
+    <div class="container">
+        <div class="service-form-card become-artisan-card">
+            <span class="artisan-dashboard-eyebrow">UPGRADE YOUR ACCOUNT</span>
+            <h1>Become an Artisan</h1>
+            <p class="service-form-subtitle">Tell customers a little about yourself and the work you do. You can add your services once your profile is live.</p>
 
-    <div class="col-md-8 col-lg-6">
-
-        <div class="card shadow-sm">
-
-            <div class="card-body p-4">
-
-                <h2 class="text-center mb-2">
-                    Become an Artisan
-                </h2>
-
-                <p class="text-center text-muted mb-4">
-                    Tell customers a little about yourself and the
-                    services you provide.
-                </p>
-
-
-                <form method="POST">
-
-                    <!-- Bio -->
-                    <div class="mb-3">
-
-                        <label for="bio" class="form-label">
-                            About You
-                        </label>
-
-                        <textarea
-                            class="form-control"
-                            id="bio"
-                            name="bio"
-                            rows="5"
-                            placeholder="Tell customers about your experience and expertise..."
-                            required
-                        ></textarea>
-
-                    </div>
-
-
-                    <!-- Phone -->
-                    <div class="mb-3">
-
-                        <label for="phone" class="form-label">
-                            Phone Number
-                        </label>
-
-                        <input
-                            type="tel"
-                            class="form-control"
-                            id="phone"
-                            name="phone"
-                            placeholder="e.g. 08012345678"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Location -->
-                    <div class="mb-4">
-
-                        <label for="location" class="form-label">
-                            Location
-                        </label>
-
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="location"
-                            name="location"
-                            placeholder="e.g. Agbani, Enugu State"
-                            required
-                        >
-
-                    </div>
-
-
-                    <button
-                        type="submit"
-                        class="btn btn-dark w-100"
+            <form method="POST" class="service-form">
+                <div class="mb-3">
+                    <label for="category" class="form-label">Trade / craft</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="category"
+                        name="category"
+                        placeholder="e.g. Plumbing"
+                        required
                     >
-                        Create Artisan Profile
-                    </button>
+                </div>
 
-                </form>
+                <div class="mb-3">
+                    <label for="experience" class="form-label">Years of experience</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        id="experience"
+                        name="experience"
+                        min="0"
+                        placeholder="e.g. 5"
+                        required
+                    >
+                </div>
 
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone number</label>
+                    <input
+                        type="tel"
+                        class="form-control"
+                        id="phone"
+                        name="phone"
+                        placeholder="e.g. 08012345678"
+                        required
+                    >
+                </div>
 
-                <p class="text-center text-muted mt-3 mb-0">
-                    You can add your services after creating your profile.
-                </p>
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="location"
+                        name="location"
+                        placeholder="e.g. Agbani, Enugu State"
+                        required
+                    >
+                </div>
 
-            </div>
+                <div class="mb-4">
+                    <label for="bio" class="form-label">About you</label>
+                    <textarea
+                        class="form-control"
+                        id="bio"
+                        name="bio"
+                        rows="5"
+                        placeholder="Tell customers about your experience and expertise..."
+                        required
+                    ></textarea>
+                </div>
 
+                <button type="submit" class="hero-btn hero-btn-primary booking-submit-btn">
+                    Create artisan profile
+                    <span class="ms-2">→</span>
+                </button>
+            </form>
         </div>
-
     </div>
-
-</div>
+</section>
 
 {% endblock %}

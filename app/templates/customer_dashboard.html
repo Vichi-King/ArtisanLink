@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}
+Customer Dashboard | ArtisanLink
+{% endblock %}
+
+{% block content %}
+
+<section class="artisan-dashboard">
+    <div class="container">
+        <header class="artisan-dashboard-hero">
+            <div class="artisan-dashboard-intro">
+                <span class="artisan-dashboard-eyebrow">MY DASHBOARD</span>
+                <h1>Welcome back,<br><span>{{ user.full_name }}.</span></h1>
+                <p>Track your booking requests and discover trusted artisans for your next job.</p>
+            </div>
+
+            <div class="artisan-status-card">
+                <span class="artisan-status-dot"></span>
+                <div>
+                    <strong>{{ pending_total }} pending</strong>
+                    <small>booking request{{ '' if pending_total == 1 else 's' }}</small>
+                </div>
+            </div>
+        </header>
+
+        <div class="artisan-dashboard-stats" aria-label="Booking overview">
+            <div class="artisan-stat-card">
+                <span>Total bookings</span>
+                <strong>{{ booking_total }}</strong>
+            </div>
+            <div class="artisan-stat-card">
+                <span>Pending</span>
+                <strong>{{ pending_total }}</strong>
+            </div>
+            <div class="artisan-stat-card">
+                <span>Completed</span>
+                <strong>{{ completed_total }}</strong>
+            </div>
+        </div>
+
+        <div class="artisan-dashboard-grid">
+            <article class="artisan-profile-card">
+                <div class="artisan-card-heading">
+                    <div>
+                        <span>MY ACCOUNT</span>
+                        <h2>Your details</h2>
+                    </div>
+                    <div class="artisan-avatar" aria-hidden="true">
+                        {% if user.profile_picture %}
+                            <img src="{{ url_for('static', filename='uploads/artisans/' ~ user.profile_picture) }}" alt="">
+                        {% else %}
+                            {{ user.full_name[:1]|upper }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <dl class="artisan-profile-details">
+                    <div><dt>Name</dt><dd>{{ user.full_name }}</dd></div>
+                    <div><dt>Email</dt><dd>{{ user.email }}</dd></div>
+                </dl>
+
+                <div class="artisan-profile-actions">
+                    <a href="{{ url_for('my_bookings') }}" class="artisan-secondary-action">View all bookings <span>→</span></a>
+                    <button type="button" class="al-dashboard-secondary-btn" data-bs-toggle="modal" data-bs-target="#passwordUpdateModal">Change password</button>
+                </div>
+            </article>
+
+            <article class="artisan-services-card">
+                <div class="artisan-card-heading">
+                    <div>
+                        <span>RECENT ACTIVITY</span>
+                        <h2>Your latest bookings</h2>
+                    </div>
+                    <span class="artisan-service-count">{{ recent_bookings|length }}</span>
+                </div>
+
+                {% if recent_bookings %}
+                    <div class="artisan-service-list">
+                        {% for booking in recent_bookings %}
+                            <div class="artisan-service-item">
+                                <div class="artisan-service-icon">✦</div>
+                                <div>
+                                    <h3>{{ booking.artisan.user.full_name }}</h3>
+                                    <p>{{ booking.service.name }} · {{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</p>
+                                </div>
+                                <strong class="al-status-badge al-status-{{ booking.status }}">{{ booking.status|capitalize }}</strong>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="artisan-empty-state">
+                        <div class="artisan-empty-icon">+</div>
+                        <h3>No bookings yet</h3>
+                        <p>Browse artisans and send your first booking request.</p>
+                        <a href="{{ url_for('artisans') }}" class="artisan-primary-action">Find an artisan <span>→</span></a>
+                    </div>
+                {% endif %}
+            </article>
+        </div>
+
+        <div class="customer-dashboard-suggested">
+            <div class="artisan-card-heading">
+                <div>
+                    <span>DISCOVER</span>
+                    <h2>Artisans you might like</h2>
+                </div>
+                <a href="{{ url_for('artisans') }}" class="artisan-secondary-action">View all <span>→</span></a>
+            </div>
+
+            <div class="artisan-grid">
+                {% for artisan, rating, review_count, completed_jobs, score in suggested_artisans %}
+                    <article class="artisan-card">
+                        <div class="artisan-image">
+                            {% if artisan.user.profile_picture %}
+                                <img src="{{ url_for('static', filename='uploads/artisans/' ~ artisan.user.profile_picture) }}" alt="{{ artisan.user.full_name }}">
+                            {% else %}
+                                <div class="artisan-card-placeholder">{{ artisan.user.full_name[:1]|upper }}</div>
+                            {% endif %}
+                            {% if artisan.is_verified %}<div class="artisan-verified">✓ Verified</div>{% endif %}
+                        </div>
+                        <div class="artisan-info">
+                            <h3>{{ artisan.user.full_name }}</h3>
+                            <span class="artisan-trade">{{ artisan.category or 'Local Service' }}</span>
+                            <div class="artisan-location"><span>⌖</span>{{ artisan.location or 'Location not set' }}</div>
+                            <div class="artisan-meta"><div class="artisan-rating"><span>★</span>{{ '%.1f'|format(rating|float) }}</div><span class="artisan-reviews">{{ review_count }} review{{ '' if review_count == 1 else 's' }}</span></div>
+                            <a href="{{ url_for('artisan_profile', artisan_id=artisan.id) }}" class="artisan-profile-link">View Profile <span>→</span></a>
+                        </div>
+                    </article>
+                {% else %}
+                    <p class="featured-empty">No artisans to show yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include "_password_update_modal.html" %}
+
+{% endblock %}

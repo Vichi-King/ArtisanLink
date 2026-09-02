@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ "Edit Service" if service else "Add a Service" }} | ArtisanLink
+{% endblock %}
+
+{% block content %}
+
+<section class="booking-form-section">
+    <div class="container">
+        <a href="{{ url_for('artisan_dashboard') }}" class="artisan-back-link">← Back to dashboard</a>
+
+        <div class="service-form-card">
+            <span class="artisan-dashboard-eyebrow">{{ "EDIT SERVICE" if service else "NEW SERVICE" }}</span>
+            <h1>{{ "Edit your service" if service else "Add a new service" }}</h1>
+            <p class="service-form-subtitle">This is what customers will see and book from your profile.</p>
+
+            <form method="POST" class="service-form">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Service name</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="name"
+                        name="name"
+                        placeholder="e.g. Pipe leak repair"
+                        value="{{ service.name if service else '' }}"
+                        required
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="category"
+                        name="category"
+                        placeholder="e.g. Plumbing"
+                        value="{{ service.category if service else '' }}"
+                        required
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price (₦)</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        id="price"
+                        name="price"
+                        min="1"
+                        step="0.01"
+                        placeholder="e.g. 15000"
+                        value="{{ service.price if service else '' }}"
+                        required
+                    >
+                </div>
+
+                <div class="mb-4">
+                    <label for="description" class="form-label">Description <span class="service-form-optional">(optional)</span></label>
+                    <textarea
+                        class="form-control"
+                        id="description"
+                        name="description"
+                        rows="4"
+                        placeholder="What does this service include?"
+                    >{{ service.description if service else '' }}</textarea>
+                </div>
+
+                <button type="submit" class="hero-btn hero-btn-primary booking-submit-btn">
+                    {{ "Save changes" if service else "Add service" }}
+                    <span class="ms-2">→</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -120,6 +120,10 @@ class Booking(db.Model):
     booking_date = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(30), default="pending")
 
+    customer = db.relationship("User")
+    artisan = db.relationship("Artisan")
+    service = db.relationship("Service")
+
 
 class Review(db.Model):
     __tablename__ = "reviews"

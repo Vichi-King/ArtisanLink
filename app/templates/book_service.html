@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}
+Book {{ service.name }} | ArtisanLink
+{% endblock %}
+
+{% block content %}
+
+<section class="booking-form-section">
+    <div class="container">
+        <a href="{{ url_for('artisan_profile', artisan_id=artisan.id) }}" class="artisan-back-link">← Back to {{ artisan.user.full_name }}'s profile</a>
+
+        <div class="booking-form-card">
+            <div class="booking-form-summary">
+                <span class="artisan-dashboard-eyebrow">BOOKING REQUEST</span>
+                <h1>{{ service.name }}</h1>
+                <p class="booking-form-artisan">with {{ artisan.user.full_name }}{% if artisan.is_verified %} <small>✓ Verified</small>{% endif %}</p>
+
+                <dl class="booking-summary-details">
+                    <div><dt>Category</dt><dd>{{ service.category }}</dd></div>
+                    <div><dt>Price</dt><dd>₦{{ "{:,.0f}".format(service.price) }}</dd></div>
+                    <div><dt>Location</dt><dd>{{ artisan.location or "Not set" }}</dd></div>
+                </dl>
+
+                {% if service.description %}
+                    <p class="booking-form-description">{{ service.description }}</p>
+                {% endif %}
+            </div>
+
+            <form method="POST" class="booking-form">
+                <div class="mb-3">
+                    <label for="booking_date" class="form-label">Preferred date and time</label>
+                    <input
+                        type="datetime-local"
+                        class="form-control"
+                        id="booking_date"
+                        name="booking_date"
+                        required
+                    >
+                    <div class="form-text">The artisan will confirm or decline your request.</div>
+                </div>
+
+                <button type="submit" class="hero-btn hero-btn-primary booking-submit-btn">
+                    Send booking request
+                    <span class="ms-2">→</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

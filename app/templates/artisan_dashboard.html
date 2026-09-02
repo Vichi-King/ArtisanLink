@@ -67,7 +67,10 @@ Artisan Dashboard | ArtisanLink
                     <p>{{ artisan.bio if artisan and artisan.bio else "Add a short introduction so customers understand your experience and the work you do." }}</p>
                 </div>
 
-                <a href="{{ url_for('edit_artisan_profile') }}" class="artisan-secondary-action">Edit profile <span>→</span></a>
+                <div class="artisan-profile-actions">
+                    <a href="{{ url_for('edit_artisan_profile') }}" class="artisan-secondary-action">Edit profile <span>→</span></a>
+                    <button type="button" class="al-dashboard-secondary-btn" data-bs-toggle="modal" data-bs-target="#passwordUpdateModal">Change password</button>
+                </div>
             </article>
 
             <article class="artisan-services-card">
@@ -89,15 +92,22 @@ Artisan Dashboard | ArtisanLink
                                     <p>{{ service.category }}</p>
                                 </div>
                                 <strong>₦{{ "{:,.0f}".format(service.price) }}</strong>
+                                <div class="artisan-service-item-actions">
+                                    <a href="{{ url_for('edit_service', service_id=service.id) }}" class="al-service-icon-btn" title="Edit service">✎</a>
+                                    <form method="POST" action="{{ url_for('delete_service', service_id=service.id) }}" onsubmit="return confirm('Remove {{ service.name }} from your services?');">
+                                        <button type="submit" class="al-service-icon-btn al-service-icon-btn-danger" title="Delete service">✕</button>
+                                    </form>
+                                </div>
                             </div>
                         {% endfor %}
                     </div>
+                    <a href="{{ url_for('add_service') }}" class="artisan-secondary-action">Add another service <span>→</span></a>
                 {% else %}
                     <div class="artisan-empty-state">
                         <div class="artisan-empty-icon">+</div>
                         <h3>Show customers what you do</h3>
                         <p>You have not added a service yet. Your service list is where customers discover your work.</p>
-                        <a href="#" class="artisan-primary-action">Add your first service <span>→</span></a>
+                        <a href="{{ url_for('add_service') }}" class="artisan-primary-action">Add your first service <span>→</span></a>
                     </div>
                 {% endif %}
             </article>
