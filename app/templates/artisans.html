@@ -1,16 +1,188 @@
 {% extends "base.html" %}
 {% block title %}ArtisanLink | Find an Artisan{% endblock %}
 {% block content %}
-<section class="artisans-page-hero"><div class="container"><div class="artisans-page-hero-content"><div class="artisans-page-eyebrow">FIND YOUR ARTISAN</div><h1 class="artisans-page-title">Skilled people.<br><span>Real work.</span></h1><p class="artisans-page-description">Discover skilled local artisans, compare their experience and find the right professional for your job.</p></div></div></section>
-<section class="artisan-directory" id="directory"><div class="container">
-    <div class="artisan-directory-header"><div><span class="artisan-directory-eyebrow">ARTISAN DIRECTORY</span><h2>Find the right professional</h2></div><p id="artisanCount">{{ total_artisans }} artisan{{ '' if total_artisans == 1 else 's' }} available</p></div>
-    <div class="artisan-grid" id="artisanGrid">{% include "_artisan_cards.html" %}</div>
-    <div class="artisan-empty{% if artisans %} d-none{% endif %}" id="artisanEmpty"><div class="artisan-empty-icon">⌕</div><h3>No artisans found</h3><p>New artisan profiles will appear here as they join ArtisanLink.</p></div>
-    {% if has_more %}<div class="artisan-load-more-wrap"><button type="button" class="artisan-load-more" id="loadMoreArtisans" data-page="1">Show more artisans <span>↓</span></button></div>{% endif %}
-</div></section>
-{% if session.get("user_role") == "artisan" %}<section class="artisan-page-cta"><div class="container"><div class="artisan-page-cta-inner"><div><span>YOUR ARTISAN PROFILE</span><h2>Manage your services and bookings.</h2></div><a href="{{ url_for('artisan_dashboard') }}" class="artisan-page-cta-button">Go to Dashboard <span>→</span></a></div></div></section>{% elif session.get("user_role") != "admin" %}<section class="artisan-page-cta"><div class="container"><div class="artisan-page-cta-inner"><div><span>ARE YOU A SKILLED PROFESSIONAL?</span><h2>Put your skills in front of people who need them.</h2></div><a href="{{ url_for('become_artisan') if session.get('user_id') else url_for('register', role='artisan') }}" class="artisan-page-cta-button">Become an Artisan <span>→</span></a></div></div></section>{% endif %}
+<section class="artisans-page-hero">
+    <div class="container">
+        <div class="artisans-page-hero-content">
+            <div class="artisans-page-eyebrow">FIND YOUR ARTISAN</div>
+            <h1 class="artisans-page-title">Skilled people.<br><span>Real work.</span></h1>
+            <p class="artisans-page-description">Discover skilled local artisans, compare their experience and find the right professional for your job.</p>
+        </div>
+    </div>
+</section>
+
+<section class="artisan-directory" id="directory">
+    <div class="container">
+        <div class="artisan-directory-header">
+            <div>
+                <span class="artisan-directory-eyebrow">ARTISAN DIRECTORY</span>
+                <h2>Find the right professional</h2>
+            </div>
+            <p id="artisanCount">{{ total_artisans }} artisan{{ '' if total_artisans == 1 else 's' }} found</p>
+        </div>
+
+        <form class="artisan-filters" id="artisanFilters" method="get" action="{{ url_for('artisans') }}">
+            <div class="artisan-search">
+                <span>⌕</span>
+                <input type="search" id="artisanSearch" name="q" value="{{ current_search }}" placeholder="Search by name, service, category or location..." autocomplete="off">
+            </div>
+
+            <div class="artisan-filter">
+                <select id="artisanCategory" name="category" aria-label="Filter by category">
+                    <option value="">All categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}" {% if current_category == category %}selected{% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="artisan-filter">
+                <select id="artisanLocation" name="location" aria-label="Filter by location">
+                    <option value="">All locations</option>
+                    {% for location in locations %}
+                    <option value="{{ location }}" {% if current_location == location %}selected{% endif %}>{{ location }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="artisan-filter">
+                <select id="artisanSort" name="sort" aria-label="Sort artisans">
+                    <option value="recommended" {% if current_sort == 'recommended' %}selected{% endif %}>Recommended</option>
+                    <option value="rating" {% if current_sort == 'rating' %}selected{% endif %}>Highest rated</option>
+                    <option value="experience" {% if current_sort == 'experience' %}selected{% endif %}>Most experienced</option>
+                    <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest first</option>
+                </select>
+            </div>
+
+            <label class="artisan-verified-filter">
+                <input type="checkbox" id="verifiedOnly" name="verified" value="1" {% if current_verified %}checked{% endif %}>
+                <span class="artisan-filter-check">✓</span>
+                <span>Verified artisans only</span>
+            </label>
+
+            <a href="{{ url_for('artisans') }}" class="artisan-clear-filters" id="clearArtisanFilters">Clear filters</a>
+        </form>
+
+        <div class="artisan-grid" id="artisanGrid">
+            {% include "_artisan_cards.html" %}
+        </div>
+
+        <div class="artisan-empty{% if artisans %} d-none{% endif %}" id="artisanEmpty">
+            <div class="artisan-empty-icon">⌕</div>
+            <h3>No artisans found</h3>
+            <p>Try adjusting your search or filters. New artisan profiles will appear here as they join ArtisanLink.</p>
+            <a href="{{ url_for('artisans') }}" class="artisan-empty-reset">Reset search</a>
+        </div>
+
+        <div class="artisan-load-more-wrap{% if not has_more %} d-none{% endif %}" id="loadMoreWrap">
+            <button type="button" class="artisan-load-more" id="loadMoreArtisans" data-page="1">Show more artisans <span>↓</span></button>
+        </div>
+    </div>
+</section>
+
+{% if session.get("user_role") == "artisan" %}
+<section class="artisan-page-cta"><div class="container"><div class="artisan-page-cta-inner"><div><span>YOUR ARTISAN PROFILE</span><h2>Manage your services and bookings.</h2></div><a href="{{ url_for('artisan_dashboard') }}" class="artisan-page-cta-button">Go to Dashboard <span>→</span></a></div></div></section>
+{% elif session.get("user_role") != "admin" %}
+<section class="artisan-page-cta"><div class="container"><div class="artisan-page-cta-inner"><div><span>ARE YOU A SKILLED PROFESSIONAL?</span><h2>Put your skills in front of people who need them.</h2></div><a href="{{ url_for('become_artisan') if session.get('user_id') else url_for('register', role='artisan') }}" class="artisan-page-cta-button">Become an Artisan <span>→</span></a></div></div></section>
+{% endif %}
+
 <script>
-const loadButton=document.getElementById("loadMoreArtisans");
-if(loadButton){loadButton.addEventListener("click",async function(){const nextPage=Number(this.dataset.page)+1;this.disabled=true;this.textContent="Loading...";const response=await fetch(`{{ url_for('load_artisans') }}?page=${nextPage}`);const result=await response.json();document.getElementById("artisanGrid").insertAdjacentHTML("beforeend",result.html);this.dataset.page=nextPage;if(!result.has_more)this.remove();else{this.disabled=false;this.innerHTML="Show more artisans <span>↓</span>";}});}
+(function () {
+    const form = document.getElementById("artisanFilters");
+    const grid = document.getElementById("artisanGrid");
+    const empty = document.getElementById("artisanEmpty");
+    const count = document.getElementById("artisanCount");
+    const loadWrap = document.getElementById("loadMoreWrap");
+    const loadButton = document.getElementById("loadMoreArtisans");
+    const search = document.getElementById("artisanSearch");
+    const category = document.getElementById("artisanCategory");
+    const location = document.getElementById("artisanLocation");
+    const sort = document.getElementById("artisanSort");
+    const verified = document.getElementById("verifiedOnly");
+
+    function getParams() {
+        const params = new URLSearchParams(new FormData(form));
+        params.delete("page");
+        return params;
+    }
+
+    function updateUrl(params) {
+        const query = params.toString();
+        window.history.replaceState({}, "", `{{ url_for('artisans') }}${query ? "?" + query : ""}`);
+    }
+
+    function updateCount(total) {
+        count.textContent = `${total} artisan${total === 1 ? "" : "s"} found`;
+    }
+
+    async function applyFilters() {
+        const params = getParams();
+        updateUrl(params);
+        grid.innerHTML = '<div class="artisan-loading">Finding artisans...</div>';
+        empty.classList.add("d-none");
+        loadWrap.classList.add("d-none");
+
+        try {
+            const response = await fetch(`{{ url_for('load_artisans') }}?${params.toString()}&page=1`);
+            if (!response.ok) throw new Error("Unable to load artisans");
+            const result = await response.json();
+            grid.innerHTML = result.html;
+            updateCount(result.count);
+
+            if (result.count === 0) {
+                empty.classList.remove("d-none");
+            }
+            if (result.has_more) {
+                loadButton.dataset.page = "1";
+                loadButton.disabled = false;
+                loadButton.innerHTML = 'Show more artisans <span>↓</span>';
+                loadWrap.classList.remove("d-none");
+            }
+        } catch (error) {
+            grid.innerHTML = '<div class="artisan-loading">Something went wrong while loading artisans. Please try again.</div>';
+        }
+    }
+
+    let searchTimer;
+    search.addEventListener("input", function () {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(applyFilters, 300);
+    });
+
+    [category, location, sort, verified].forEach(function (control) {
+        control.addEventListener("change", applyFilters);
+    });
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        applyFilters();
+    });
+
+    loadButton.addEventListener("click", async function () {
+        const nextPage = Number(this.dataset.page) + 1;
+        const params = getParams();
+        params.set("page", nextPage);
+        this.disabled = true;
+        this.textContent = "Loading...";
+
+        try {
+            const response = await fetch(`{{ url_for('load_artisans') }}?${params.toString()}`);
+            if (!response.ok) throw new Error("Unable to load more artisans");
+            const result = await response.json();
+            grid.insertAdjacentHTML("beforeend", result.html);
+            updateCount(result.count);
+            this.dataset.page = nextPage;
+            if (!result.has_more) {
+                loadWrap.classList.add("d-none");
+            } else {
+                this.disabled = false;
+                this.innerHTML = 'Show more artisans <span>↓</span>';
+            }
+        } catch (error) {
+            this.disabled = false;
+            this.innerHTML = 'Try again <span>↻</span>';
+        }
+    });
+})();
 </script>
 {% endblock %}
