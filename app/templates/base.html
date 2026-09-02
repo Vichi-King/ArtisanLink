@@ -9,18 +9,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
 </head>
 <body class="d-flex flex-column min-vh-100">
     <a class="al-skip-link" href="#main-content">Skip to content</a>
-
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark" aria-label="Main navigation">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('home') }}" aria-label="ArtisanLink home">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ArtisanLink" class="navbar-logo">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <a class="navbar-brand" href="{{ url_for('home') }}" aria-label="ArtisanLink home"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="ArtisanLink" class="navbar-logo"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
@@ -49,47 +45,47 @@
             </div>
         </div>
     </nav>
-
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-stack" aria-live="polite">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show artisan-flash" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+        {% if messages %}<div class="flash-stack" aria-live="polite">{% for category, message in messages %}<div class="alert alert-{{ category }} alert-dismissible fade show artisan-flash" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>{% endfor %}</div>{% endif %}
     {% endwith %}
-
     <main id="main-content" class="flex-grow-1">{% block content %}{% endblock %}</main>
 
     <footer class="al-site-footer">
         <div class="container">
             <div class="al-footer-grid">
-                <div>
-                    <a href="{{ url_for('home') }}" class="al-footer-brand">ArtisanLink</a>
-                    <p>Connecting you with trusted local artisans for quality services.</p>
+                <div class="al-footer-brand-wrap">
+                    <a href="{{ url_for('home') }}" class="al-footer-brand" aria-label="ArtisanLink home"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="ArtisanLink"></a>
+                    <p class="al-footer-tagline">Skilled hands. Trusted service.</p>
+                    <p class="al-footer-description">Connecting customers with skilled local artisans for everyday jobs and professional services.</p>
                 </div>
-                <div>
-                    <h2>Explore</h2>
-                    <a href="{{ url_for('artisans') }}">Find Artisans</a>
+                <div class="al-footer-column">
+                    <h2>Platform</h2>
                     <a href="{{ url_for('services') }}">Services</a>
-                    <a href="{{ url_for('about') }}">About Us</a>
+                    <a href="{{ url_for('artisans') }}">Find an Artisan</a>
+                    <a href="{{ url_for('home') }}#how-it-works">How It Works</a>
+                    <a href="{{ url_for('artisans') }}">Reviews</a>
                 </div>
-                <div>
-                    <h2>Support</h2>
-                    <a href="{{ url_for('contact') }}">Contact Us</a>
-                    <button type="button" class="al-footer-help" id="helpCenterTrigger">Help Center</button>
+                <div class="al-footer-column">
+                    <h2>Company</h2>
+                    <a href="{{ url_for('about') }}">About Us</a>
+                    <a href="{{ url_for('contact') }}">Contact</a>
+                    <a href="{{ url_for('become_artisan') }}">Become an Artisan</a>
+                    <button type="button" id="helpCenterTrigger">Help Center</button>
+                </div>
+                <div class="al-footer-column">
+                    <h2>Account</h2>
+                    <a href="{{ url_for('login') }}">Sign In</a>
+                    <a href="{{ url_for('register', role='customer') }}">Create Account</a>
                 </div>
             </div>
-            <div class="al-footer-bottom"><span>© {{ now().year if now is defined else 2026 }} ArtisanLink. All rights reserved.</span><span>Built for local communities.</span></div>
+            <div class="al-footer-bottom">
+                <span>© {{ now().year if now is defined else 2026 }} ArtisanLink. All rights reserved.</span>
+                <div class="al-footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+            </div>
         </div>
     </footer>
 
     <button type="button" class="al-back-top" id="backToTop" aria-label="Back to top" title="Back to top">↑</button>
-
     <div class="help-overlay" id="helpOverlay" aria-hidden="true">
         <div class="help-modal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
             <div class="help-modal-header"><div><span class="help-modal-label">ARTISANLINK SUPPORT</span><h2 id="helpModalTitle">Help Center</h2></div><button type="button" class="help-close" id="helpClose" aria-label="Close Help Center">×</button></div>
@@ -102,21 +98,16 @@
             <div class="help-modal-footer"><span>Need more help?</span><a href="mailto:support@artisanlink.com" class="help-contact">Contact Support →</a></div>
         </div>
     </div>
-
     <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const trigger = document.getElementById("helpCenterTrigger");
-        const overlay = document.getElementById("helpOverlay");
-        const close = document.getElementById("helpClose");
-        const backTop = document.getElementById("backToTop");
+        const trigger = document.getElementById("helpCenterTrigger"), overlay = document.getElementById("helpOverlay"), close = document.getElementById("helpClose"), backTop = document.getElementById("backToTop");
         if (trigger && overlay) trigger.addEventListener("click", function () { overlay.classList.add("active"); overlay.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden"; });
         function closeHelp() { if (!overlay) return; overlay.classList.remove("active"); overlay.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
         if (close) close.addEventListener("click", closeHelp);
         if (overlay) overlay.addEventListener("click", function (e) { if (e.target === overlay) closeHelp(); });
         document.addEventListener("keydown", function (e) { if (e.key === "Escape" && overlay && overlay.classList.contains("active")) closeHelp(); });
         function toggleTop() { if (backTop) backTop.classList.toggle("visible", window.scrollY > 420); }
-        window.addEventListener("scroll", toggleTop, { passive: true });
-        toggleTop();
+        window.addEventListener("scroll", toggleTop, { passive: true }); toggleTop();
         if (backTop) backTop.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: "smooth" }); });
     });
     </script>
