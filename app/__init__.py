@@ -17,11 +17,13 @@ def create_app():
     from .booking_routes import register_booking_routes
     from .dashboard_routes import register_dashboard_routes
     from .notification_hooks import register_notification_hooks
+    from .admin_routes import register_admin_routes
 
     register_routes(app)
     register_profile_routes(app)
     register_booking_routes(app)
     register_dashboard_routes(app)
+    register_admin_routes(app)
     register_notification_hooks()
 
     with app.app_context():
