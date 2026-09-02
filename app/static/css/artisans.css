@@ -1,0 +1,150 @@
+/* =========================================================
+   ARTISAN DIRECTORY — PHASE 2
+   ========================================================= */
+
+.artisan-filters {
+    grid-template-columns: minmax(280px, 1fr) 190px 190px;
+    align-items: center;
+    margin-bottom: 38px;
+}
+
+.artisan-verified-filter {
+    grid-column: 1 / 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    min-height: 46px;
+    padding: 0 13px;
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius: 10px;
+    background: var(--al-white);
+    color: #555;
+    font-size: .78rem;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color var(--al-transition), box-shadow var(--al-transition), color var(--al-transition);
+}
+
+.artisan-verified-filter:hover {
+    border-color: var(--al-gold);
+    color: var(--al-dark);
+}
+
+.artisan-verified-filter input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.artisan-filter-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    height: 23px;
+    border: 1px solid rgba(0,0,0,.14);
+    border-radius: 50%;
+    background: #fff;
+    color: transparent;
+    font-size: .68rem;
+    font-weight: 900;
+    transition: background var(--al-transition), color var(--al-transition), border-color var(--al-transition);
+}
+
+.artisan-verified-filter input:checked + .artisan-filter-check {
+    border-color: var(--al-gold);
+    background: var(--al-gold);
+    color: var(--al-dark);
+}
+
+.artisan-verified-filter input:focus-visible + .artisan-filter-check {
+    box-shadow: 0 0 0 3px rgba(245,181,27,.2);
+}
+
+.artisan-clear-filters {
+    justify-self: end;
+    color: #777;
+    font-size: .76rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: color var(--al-transition);
+}
+
+.artisan-clear-filters:hover {
+    color: var(--al-gold);
+}
+
+.artisan-loading {
+    grid-column: 1 / -1;
+    padding: 65px 20px;
+    border: 1px solid rgba(0,0,0,.06);
+    border-radius: 16px;
+    background: var(--al-white);
+    color: #888;
+    text-align: center;
+    font-size: .85rem;
+}
+
+.artisan-empty-reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    margin-top: 18px;
+    padding: 0 17px;
+    border-radius: 9px;
+    background: var(--al-dark);
+    color: var(--al-white);
+    font-size: .76rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.artisan-empty-reset:hover {
+    background: var(--al-gold);
+    color: var(--al-dark);
+}
+
+@media (max-width: 900px) {
+    .artisan-filters {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .artisan-search {
+        grid-column: 1 / -1;
+    }
+
+    .artisan-verified-filter {
+        grid-column: 1 / 2;
+    }
+
+    .artisan-clear-filters {
+        grid-column: 2 / 3;
+    }
+}
+
+@media (max-width: 576px) {
+    .artisan-filters {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .artisan-search,
+    .artisan-verified-filter,
+    .artisan-clear-filters {
+        grid-column: auto;
+    }
+
+    .artisan-verified-filter {
+        width: 100%;
+        box-sizing: border-box;
+        justify-content: flex-start;
+    }
+
+    .artisan-clear-filters {
+        justify-self: start;
+        padding: 5px 0;
+    }
+}
