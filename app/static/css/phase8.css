@@ -1,0 +1,43 @@
+/* ArtisanLink — final visual polish */
+:root{--al-gold:#f5b51b;--al-ink:#0b0b0b;--al-muted:#707070;--al-border:rgba(0,0,0,.08)}
+
+/* Accessible keyboard focus */
+:where(a,button,input,select,textarea,summary):focus-visible{outline:3px solid rgba(245,181,27,.45);outline-offset:3px}
+
+/* Shared loading state for form submissions */
+.al-form-loading{cursor:wait;opacity:.82}
+.al-form-loading button[type=submit]{position:relative;pointer-events:none}
+.al-form-loading button[type=submit]>*{visibility:hidden}
+.al-form-loading button[type=submit]::after{content:"";position:absolute;top:50%;left:50%;width:18px;height:18px;margin:-9px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:al-spin .65s linear infinite}
+@keyframes al-spin{to{transform:rotate(360deg)}}
+
+/* Shared empty states */
+.al-empty-state{padding:42px 24px;text-align:center;border:1px dashed rgba(0,0,0,.14);border-radius:16px;background:rgba(255,255,255,.72)}
+.al-empty-state-icon{font-size:2rem;line-height:1;margin-bottom:12px;opacity:.55}
+.al-empty-state h3{margin:0 0 7px;color:var(--al-ink);font-size:1.15rem}
+.al-empty-state p{margin:0 auto 18px;max-width:520px;color:var(--al-muted);line-height:1.6}
+
+/* Friendly HTTP error pages */
+.al-error-page{min-height:calc(100vh - 160px);display:grid;place-items:center;padding:60px 20px;background:#f7f7f5}
+.al-error-card{width:min(100%,620px);padding:56px 40px;text-align:center;background:#fff;border:1px solid var(--al-border);border-radius:22px;box-shadow:0 18px 55px rgba(0,0,0,.08)}
+.al-error-code{display:inline-block;margin-bottom:12px;font-size:4.5rem;font-weight:900;line-height:1;color:var(--al-gold);letter-spacing:-.06em}
+.al-error-card h1{margin:0 0 12px;font-size:clamp(1.7rem,4vw,2.35rem);color:var(--al-ink)}
+.al-error-card p{margin:0 auto;max-width:500px;color:var(--al-muted);line-height:1.65}
+.al-error-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px}
+.al-error-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border-radius:9px;text-decoration:none;font-weight:800;transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+.al-error-actions a:hover{transform:translateY(-1px)}
+.al-error-primary{background:var(--al-ink);color:#fff;box-shadow:0 8px 18px rgba(0,0,0,.14)}
+.al-error-primary:hover{color:#fff;background:#222}
+.al-error-secondary{border:1px solid #d7d7d7;color:var(--al-ink);background:#fff}
+.al-error-secondary:hover{color:var(--al-ink);background:#f7f7f5}
+
+/* Consistent disabled controls */
+button:disabled,input:disabled,select:disabled,textarea:disabled{cursor:not-allowed}
+
+@media(max-width:576px){
+    .al-error-page{min-height:calc(100vh - 130px);padding:32px 16px}
+    .al-error-card{padding:42px 22px;border-radius:18px}
+    .al-error-code{font-size:3.7rem}
+    .al-error-actions{flex-direction:column}
+    .al-error-actions a{width:100%}
+}
