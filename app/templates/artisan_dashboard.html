@@ -1,98 +1,46 @@
 {% extends "base.html" %}
-
 {% block title %}Artisan Dashboard | ArtisanLink{% endblock %}
-
 {% block content %}
 <section class="artisan-dashboard">
     <div class="container">
         <header class="artisan-dashboard-hero">
-            <div class="artisan-dashboard-intro">
-                <span class="artisan-dashboard-eyebrow">ARTISAN WORKSPACE</span>
-                <h1>Welcome back,<br><span>{{ user.full_name }}.</span></h1>
-                <p>Keep your professional profile ready for the next customer who finds you.</p>
-            </div>
-            <div class="artisan-status-card">
-                <span class="artisan-status-dot"></span>
-                <div><strong>Profile active</strong><small>Visible on ArtisanLink</small></div>
-            </div>
+            <div class="artisan-dashboard-intro"><span class="artisan-dashboard-eyebrow">ARTISAN WORKSPACE</span><h1>Welcome back,<br><span>{{ user.full_name }}.</span></h1><p>Keep your professional profile ready for the next customer who finds you.</p></div>
+            <div class="artisan-status-card"><span class="artisan-status-dot"></span><div><strong>Profile active</strong><small>Visible on ArtisanLink</small></div></div>
         </header>
 
         <div class="artisan-dashboard-stats" aria-label="Profile overview">
             <div class="artisan-stat-card"><span>Services listed</span><strong>{{ artisan.services|length if artisan else 0 }}</strong></div>
-            <div class="artisan-stat-card"><span>Craft</span><strong>{{ artisan.category if artisan and artisan.category else "Not set" }}</strong></div>
+            <div class="artisan-stat-card"><span>Portfolio</span><strong>{{ artisan.portfolio_items|length if artisan else 0 }}</strong></div>
             <div class="artisan-stat-card"><span>Experience</span><strong>{% if artisan and artisan.experience is not none %}{{ artisan.experience }} yrs{% else %}Not set{% endif %}</strong></div>
         </div>
 
         <div class="artisan-dashboard-grid">
             <article class="artisan-profile-card">
-                <div class="artisan-card-heading">
-                    <div><span>MY PROFILE</span><h2>Your public profile</h2></div>
-                    <div class="artisan-avatar" aria-hidden="true">
-                        {% if user.profile_picture %}<img src="{{ url_for('static', filename='uploads/artisans/' ~ user.profile_picture) }}" alt="">
-                        {% else %}{{ user.full_name[:1]|upper }}{% endif %}
-                    </div>
-                </div>
-
-                <dl class="artisan-profile-details">
-                    <div><dt>Name</dt><dd>{{ user.full_name }}</dd></div>
-                    <div><dt>Email</dt><dd>{{ user.email }}</dd></div>
-                    <div><dt>Phone</dt><dd>{{ artisan.phone if artisan else "Not set" }}</dd></div>
-                    <div><dt>Location</dt><dd>{{ artisan.location if artisan else "Not set" }}</dd></div>
-                    <div><dt>Category</dt><dd>{{ artisan.category if artisan else "Not set" }}</dd></div>
-                    <div><dt>Experience</dt><dd>{{ artisan.experience if artisan and artisan.experience is not none else "Not set" }}{% if artisan and artisan.experience is not none %} years{% endif %}</dd></div>
-                </dl>
-
-                <div class="artisan-bio">
-                    <span>ABOUT MY WORK</span>
-                    <p>{{ artisan.bio if artisan and artisan.bio else "Add a short introduction so customers understand your experience and the work you do." }}</p>
-                </div>
-
-                <div class="artisan-profile-actions">
-                    <a href="{{ url_for('artisan_profile', artisan_id=artisan.id) }}" class="artisan-primary-action">View public profile <span>→</span></a>
-                    <a href="{{ url_for('edit_artisan_profile') }}" class="artisan-secondary-action">Edit profile <span>→</span></a>
-                    <button type="button" class="al-dashboard-secondary-btn" data-bs-toggle="modal" data-bs-target="#passwordUpdateModal">Change password</button>
-                </div>
+                <div class="artisan-card-heading"><div><span>MY PROFILE</span><h2>Your public profile</h2></div><div class="artisan-avatar" aria-hidden="true">{% if user.profile_picture %}<img src="{{ url_for('static', filename='uploads/artisans/' ~ user.profile_picture) }}" alt="">{% else %}{{ user.full_name[:1]|upper }}{% endif %}</div></div>
+                <dl class="artisan-profile-details"><div><dt>Name</dt><dd>{{ user.full_name }}</dd></div><div><dt>Email</dt><dd>{{ user.email }}</dd></div><div><dt>Phone</dt><dd>{{ artisan.phone if artisan else "Not set" }}</dd></div><div><dt>Location</dt><dd>{{ artisan.location if artisan else "Not set" }}</dd></div><div><dt>Category</dt><dd>{{ artisan.category if artisan else "Not set" }}</dd></div><div><dt>Experience</dt><dd>{{ artisan.experience if artisan and artisan.experience is not none else "Not set" }}{% if artisan and artisan.experience is not none %} years{% endif %}</dd></div></dl>
+                <div class="artisan-bio"><span>ABOUT MY WORK</span><p>{{ artisan.bio if artisan and artisan.bio else "Add a short introduction so customers understand your experience and the work you do." }}</p></div>
+                <div class="artisan-profile-actions"><a href="{{ url_for('artisan_profile', artisan_id=artisan.id) }}" class="artisan-primary-action">View public profile <span>→</span></a><a href="{{ url_for('edit_artisan_profile') }}" class="artisan-secondary-action">Edit profile <span>→</span></a><button type="button" class="al-dashboard-secondary-btn" data-bs-toggle="modal" data-bs-target="#passwordUpdateModal">Change password</button></div>
             </article>
 
             <article class="artisan-services-card">
-                <div class="artisan-card-heading">
-                    <div><span>SERVICE CATALOGUE</span><h2>My services</h2></div>
-                    <span class="artisan-service-count">{{ artisan.services|length if artisan else 0 }}</span>
-                </div>
-                {% if artisan and artisan.services %}
-                    <div class="artisan-service-list">
-                        {% for service in artisan.services %}
-                        <div class="artisan-service-item">
-                            <div class="artisan-service-icon">✦</div>
-                            <div><h3>{{ service.name }}</h3><p>{{ service.category }}</p></div>
-                            <strong>₦{{ "{:,.0f}".format(service.price) }}</strong>
-                            <div class="artisan-service-item-actions">
-                                <a href="{{ url_for('edit_service', service_id=service.id) }}" class="al-service-icon-btn" title="Edit service">✎</a>
-                                <form method="POST" action="{{ url_for('delete_service', service_id=service.id) }}" onsubmit="return confirm('Remove this service from your catalogue?');">
-                                    <button type="submit" class="al-service-icon-btn al-service-icon-btn-danger" title="Delete service">✕</button>
-                                </form>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <a href="{{ url_for('add_service') }}" class="artisan-secondary-action">Add another service <span>→</span></a>
-                {% else %}
-                    <div class="artisan-empty-state">
-                        <div class="artisan-empty-icon">+</div><h3>Show customers what you do</h3>
-                        <p>You have not added a service yet. Your service list is where customers discover your work.</p>
-                        <a href="{{ url_for('add_service') }}" class="artisan-primary-action">Add your first service <span>→</span></a>
-                    </div>
-                {% endif %}
+                <div class="artisan-card-heading"><div><span>SERVICE CATALOGUE</span><h2>My services</h2></div><span class="artisan-service-count">{{ artisan.services|length if artisan else 0 }}</span></div>
+                {% if artisan and artisan.services %}<div class="artisan-service-list">{% for service in artisan.services %}<div class="artisan-service-item"><div class="artisan-service-icon">✦</div><div><h3>{{ service.name }}</h3><p>{{ service.category }}</p></div><strong>₦{{ "{:,.0f}".format(service.price) }}</strong><div class="artisan-service-item-actions"><a href="{{ url_for('edit_service', service_id=service.id) }}" class="al-service-icon-btn" title="Edit service">✎</a><form method="POST" action="{{ url_for('delete_service', service_id=service.id) }}" onsubmit="return confirm('Remove this service from your catalogue?');"><button type="submit" class="al-service-icon-btn al-service-icon-btn-danger" title="Delete service">✕</button></form></div></div>{% endfor %}</div><a href="{{ url_for('add_service') }}" class="artisan-secondary-action">Add another service <span>→</span></a>{% else %}<div class="artisan-empty-state"><div class="artisan-empty-icon">+</div><h3>Show customers what you do</h3><p>You have not added a service yet. Your service list is where customers discover your work.</p><a href="{{ url_for('add_service') }}" class="artisan-primary-action">Add your first service <span>→</span></a></div>{% endif %}
             </article>
         </div>
 
-        <div class="artisan-account-danger">
-            <div><span>ACCOUNT</span><h2>Delete your account</h2><p>Permanently remove your ArtisanLink account, profile, services and associated booking history.</p></div>
-            <button type="button" class="al-danger-outline-btn" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Delete account</button>
-        </div>
+        <section class="al-dashboard-feature-card">
+            <div class="al-dashboard-section-heading"><div><span>PORTFOLIO</span><h2>Your best work</h2><p>Show customers what you can create.</p></div><a href="{{ url_for('add_portfolio_item') }}" class="artisan-primary-action">Add project <span>+</span></a></div>
+            {% if artisan.portfolio_items %}<div class="al-portfolio-grid">{% for item in artisan.portfolio_items %}<article class="al-portfolio-card">{% if item.image %}<img src="{{ url_for('static', filename='uploads/portfolio/' ~ item.image) }}" alt="{{ item.title }}">{% else %}<div class="al-portfolio-placeholder">✦</div>{% endif %}<div><h3>{{ item.title }}</h3>{% if item.description %}<p>{{ item.description }}</p>{% endif %}<form method="POST" action="{{ url_for('delete_portfolio_item', item_id=item.id) }}" onsubmit="return confirm('Remove this project from your portfolio?');"><button type="submit">Remove</button></form></div></article>{% endfor %}</div>{% else %}<div class="al-feature-empty"><strong>Your portfolio is empty.</strong><span>Add photos and project descriptions to build customer confidence.</span><a href="{{ url_for('add_portfolio_item') }}">Add your first project →</a></div>{% endif %}
+        </section>
+
+        <section class="al-dashboard-feature-card">
+            <div class="al-dashboard-section-heading"><div><span>AVAILABILITY</span><h2>Working hours</h2><p>Tell customers when they can request your services.</p></div><a href="{{ url_for('manage_availability') }}" class="artisan-secondary-action">Manage availability <span>→</span></a></div>
+            <div class="al-availability-summary">{% set shown = false %}{% for slot in artisan.availability %}{% if slot.is_available %}{% set shown = true %}<div><strong>{{ slot.day[:3] }}</strong><span>{{ slot.start_time }} – {{ slot.end_time }}</span></div>{% endif %}{% endfor %}{% if not artisan.availability or not shown %}<p>No working hours set yet. Add your availability so customers know when to book you.</p>{% endif %}</div>
+        </section>
+
+        <div class="artisan-account-danger"><div><span>ACCOUNT</span><h2>Delete your account</h2><p>Permanently remove your ArtisanLink account, profile, services and associated booking history.</p></div><button type="button" class="al-danger-outline-btn" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Delete account</button></div>
     </div>
 </section>
-
 {% include "_password_update_modal.html" %}
 {% include "_delete_account_modal.html" %}
 {% endblock %}
