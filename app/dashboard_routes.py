@@ -2,7 +2,7 @@ from functools import wraps
 from flask import render_template, request, redirect, url_for, session, flash
 
 from . import db
-from .models import User, Notification
+from .models import User, Notification, Booking
 
 
 def _login_required(view):
@@ -17,12 +17,24 @@ def _login_required(view):
 
 def register_dashboard_routes(app):
     @app.context_processor
-    def notification_context():
+    def dashboard_context():
         if "user_id" not in session:
-            return {"unread_notifications": 0, "recent_notifications": []}
-        unread = Notification.query.filter_by(user_id=session["user_id"], is_read=False).count()
-        recent = Notification.query.filter_by(user_id=session["user_id"]).order_by(Notification.id.desc()).limit(5).all()
-        return {"unread_notifications": unread, "recent_notifications": recent}
+            return {"unread_notifications": 0, "recent_notifications": [], "dashboard_booking_stats": {}}
+        user_id = session["user_id"]
+        unread = Notification.query.filter_by(user_id=user_id, is_read=False).count()
+        recent = Notification.query.filter_by(user_id=user_id).order_by(Notification.id.desc()).limit(5).all()
+        stats = {}
+        if session.get("user_role") == "artisan":
+            user = User.query.get(user_id)
+            artisan = user.artisan_profile if user else None
+            if artisan:
+                stats = {
+                    "total": Booking.query.filter_by(artisan_id=artisan.id).count(),
+                    "pending": Booking.query.filter_by(artisan_id=artisan.id, status="pending").count(),
+                    "active": Booking.query.filter(Booking.artisan_id == artisan.id, Booking.status.in_(["accepted", "negotiating", "awaiting_customer_confirmation"])).count(),
+                    "completed": Booking.query.filter_by(artisan_id=artisan.id, status="completed").count(),
+                }
+        return {"unread_notifications": unread, "recent_notifications": recent, "dashboard_booking_stats": stats}
 
     @app.route("/notifications")
     @_login_required
