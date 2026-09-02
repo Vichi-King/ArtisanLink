@@ -15,13 +15,30 @@
                 {% for booking in bookings %}
                 <tr>
                     <td>{{ booking.customer.full_name }}</td>
-                    <td>{{ booking.service.name }}</td>
+                    <td>{{ booking.service.name }}{% if booking.status == 'negotiating' and booking.proposals %}<div class="al-proposal-note">Offer: ₦{{ "{:,.0f}".format(booking.proposals[0].proposed_price) }}</div>{% endif %}</td>
                     <td>{{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</td>
                     <td><span class="al-status-badge al-status-{{ booking.status }}">{{ booking.status|replace('_', ' ')|capitalize }}</span></td>
                     <td class="al-table-actions">
                         {% if booking.status == 'pending' %}
                             <form method="POST" action="{{ url_for('respond_booking', booking_id=booking.id) }}"><input type="hidden" name="action" value="accept"><button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-accept">Accept</button></form>
                             <form method="POST" action="{{ url_for('respond_booking', booking_id=booking.id) }}"><input type="hidden" name="action" value="decline"><button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-decline">Decline</button></form>
+                            <a href="{{ url_for('negotiate_booking', booking_id=booking.id) }}" class="al-dashboard-secondary-btn al-table-action">Negotiate</a>
+                        {% elif booking.status == 'negotiating' and booking.proposals %}
+                            {% set proposal = booking.proposals[0] %}
+                            {% if proposal.status == 'pending' and proposal.proposed_by == 'customer' %}
+                                <div class="completion-confirmation">
+                                    <strong>Customer's proposal</strong>
+                                    <div class="al-proposal-details">₦{{ "{:,.0f}".format(proposal.proposed_price) }} · {{ proposal.proposed_date.strftime('%d %b %Y, %I:%M %p') }}</div>
+                                    {% if proposal.message %}<p class="al-booking-muted">{{ proposal.message }}</p>{% endif %}
+                                    <div class="completion-actions">
+                                        <form method="POST" action="{{ url_for('respond_artisan_proposal', booking_id=booking.id, proposal_id=proposal.id) }}"><input type="hidden" name="action" value="accept"><button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-accept">Accept</button></form>
+                                        <form method="POST" action="{{ url_for('respond_artisan_proposal', booking_id=booking.id, proposal_id=proposal.id) }}"><input type="hidden" name="action" value="reject"><button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-decline">Reject</button></form>
+                                        <a href="{{ url_for('negotiate_booking', booking_id=booking.id) }}" class="al-dashboard-secondary-btn al-table-action">Counter</a>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <span class="al-booking-waiting">Waiting for customer response</span>
+                            {% endif %}
                         {% elif booking.status == 'accepted' %}
                             <form method="POST" action="{{ url_for('respond_booking', booking_id=booking.id) }}"><input type="hidden" name="action" value="complete"><button type="submit" class="al-dashboard-secondary-btn al-table-action">Mark work completed</button></form>
                         {% elif booking.status == 'awaiting_customer_confirmation' %}
@@ -30,6 +47,8 @@
                             <span class="al-booking-done">Completed</span>
                         {% elif booking.status == 'not_completed' %}
                             <span class="al-booking-not-done">Customer reported not completed</span>
+                        {% elif booking.status == 'declined' %}
+                            <span class="al-booking-muted">No action required</span>
                         {% endif %}
                     </td>
                 </tr>
