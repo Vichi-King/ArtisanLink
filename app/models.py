@@ -11,10 +11,7 @@ class User(db.Model):
     role = db.Column(db.String(20), default="customer")
     profile_picture = db.Column(db.String(255), nullable=True)
 
-    artisan_profile = db.relationship(
-        "Artisan", back_populates="user", uselist=False,
-        cascade="all, delete-orphan"
-    )
+    artisan_profile = db.relationship("Artisan", back_populates="user", uselist=False, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User {self.email}>"
@@ -34,17 +31,9 @@ class Artisan(db.Model):
     manual_rating = db.Column(db.Numeric(2, 1), nullable=True)
 
     user = db.relationship("User", back_populates="artisan_profile")
-    services = db.relationship(
-        "Service", backref="artisan", cascade="all, delete-orphan", lazy=True
-    )
-    portfolio_items = db.relationship(
-        "PortfolioItem", back_populates="artisan", cascade="all, delete-orphan",
-        order_by="PortfolioItem.id.desc()", lazy=True
-    )
-    availability = db.relationship(
-        "ArtisanAvailability", back_populates="artisan", cascade="all, delete-orphan",
-        order_by="ArtisanAvailability.day_order", lazy=True
-    )
+    services = db.relationship("Service", backref="artisan", cascade="all, delete-orphan", lazy=True)
+    portfolio_items = db.relationship("PortfolioItem", back_populates="artisan", cascade="all, delete-orphan", order_by="PortfolioItem.id.desc()", lazy=True)
+    availability = db.relationship("ArtisanAvailability", back_populates="artisan", cascade="all, delete-orphan", order_by="ArtisanAvailability.day_order", lazy=True)
 
     def __repr__(self):
         return f"<Artisan {self.id}>"
@@ -77,6 +66,22 @@ class Booking(db.Model):
     customer = db.relationship("User")
     artisan = db.relationship("Artisan")
     service = db.relationship("Service")
+    proposals = db.relationship("BookingProposal", back_populates="booking", cascade="all, delete-orphan", order_by="BookingProposal.id.desc()", lazy=True)
+
+
+class BookingProposal(db.Model):
+    __tablename__ = "booking_proposals"
+
+    id = db.Column(db.Integer, primary_key=True)
+    booking_id = db.Column(db.Integer, db.ForeignKey("bookings.id"), nullable=False)
+    proposed_by = db.Column(db.String(20), nullable=False)
+    proposed_price = db.Column(db.Numeric(10, 2), nullable=False)
+    proposed_date = db.Column(db.DateTime, nullable=False)
+    message = db.Column(db.Text, nullable=True)
+    status = db.Column(db.String(20), default="pending", nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.now(), nullable=False)
+
+    booking = db.relationship("Booking", back_populates="proposals")
 
 
 class Review(db.Model):
