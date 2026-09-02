@@ -37,6 +37,14 @@ class Artisan(db.Model):
     services = db.relationship(
         "Service", backref="artisan", cascade="all, delete-orphan", lazy=True
     )
+    portfolio_items = db.relationship(
+        "PortfolioItem", back_populates="artisan", cascade="all, delete-orphan",
+        order_by="PortfolioItem.id.desc()", lazy=True
+    )
+    availability = db.relationship(
+        "ArtisanAvailability", back_populates="artisan", cascade="all, delete-orphan",
+        order_by="ArtisanAvailability.day_order", lazy=True
+    )
 
     def __repr__(self):
         return f"<Artisan {self.id}>"
@@ -79,3 +87,29 @@ class Review(db.Model):
     artisan_id = db.Column(db.Integer, db.ForeignKey("artisans.id"), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.Text, nullable=True)
+
+
+class PortfolioItem(db.Model):
+    __tablename__ = "portfolio_items"
+
+    id = db.Column(db.Integer, primary_key=True)
+    artisan_id = db.Column(db.Integer, db.ForeignKey("artisans.id"), nullable=False)
+    title = db.Column(db.String(120), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    image = db.Column(db.String(255), nullable=True)
+
+    artisan = db.relationship("Artisan", back_populates="portfolio_items")
+
+
+class ArtisanAvailability(db.Model):
+    __tablename__ = "artisan_availability"
+
+    id = db.Column(db.Integer, primary_key=True)
+    artisan_id = db.Column(db.Integer, db.ForeignKey("artisans.id"), nullable=False)
+    day = db.Column(db.String(15), nullable=False)
+    day_order = db.Column(db.Integer, nullable=False)
+    start_time = db.Column(db.String(5), nullable=True)
+    end_time = db.Column(db.String(5), nullable=True)
+    is_available = db.Column(db.Boolean, default=True, nullable=False)
+
+    artisan = db.relationship("Artisan", back_populates="availability")
