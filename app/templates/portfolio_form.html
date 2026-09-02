@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Add Portfolio Item | ArtisanLink{% endblock %}
+{% block content %}
+<section class="al-profile-tool">
+  <div class="container al-tool-container">
+    <a href="{{ url_for('artisan_dashboard') }}" class="artisan-back-link">← Back to dashboard</a>
+    <div class="al-tool-header"><span class="artisan-dashboard-eyebrow">PORTFOLIO</span><h1>Showcase your best work.</h1><p>Give customers a visual reason to trust your craft.</p></div>
+    <form method="POST" enctype="multipart/form-data" class="al-tool-card">
+      <label>Project title<input type="text" name="title" maxlength="120" required placeholder="e.g. Custom wardrobe installation"></label>
+      <label>Description <span>(optional)</span><textarea name="description" rows="5" placeholder="Briefly describe the work, materials or result."></textarea></label>
+      <label>Project image <span>(optional)</span><input type="file" name="image" accept="image/png,image/jpeg,image/webp"><small>JPG, JPEG, PNG or WEBP.</small></label>
+      <div class="al-tool-actions"><a href="{{ url_for('artisan_dashboard') }}">Cancel</a><button type="submit">Add to portfolio →</button></div>
+    </form>
+  </div>
+</section>
+{% endblock %}
