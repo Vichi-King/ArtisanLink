@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found | ArtisanLink{% endblock %}
+{% block content %}
+<section class="al-error-page" aria-labelledby="error-title">
+    <div class="al-error-card">
+        <span class="al-error-code">404</span>
+        <h1 id="error-title">We couldn't find that page.</h1>
+        <p>The page you're looking for may have moved, been removed, or the address may be incorrect.</p>
+        <div class="al-error-actions">
+            <a href="{{ url_for('home') }}" class="al-error-primary">Back to Home</a>
+            <a href="{{ url_for('artisans') }}" class="al-error-secondary">Find an Artisan</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
