@@ -1,73 +1,45 @@
 {% extends "base.html" %}
-
-{% block title %}
-Booking Requests | ArtisanLink
-{% endblock %}
-
+{% block title %}Booking Requests | ArtisanLink{% endblock %}
 {% block content %}
-
 <section class="bookings-list-section">
     <div class="container">
         <header class="bookings-list-header">
-            <div>
-                <span class="artisan-dashboard-eyebrow">BOOKING REQUESTS</span>
-                <h1>Requests from customers</h1>
-            </div>
-            <a href="{{ url_for('artisan_dashboard') }}" class="hero-btn hero-btn-secondary">
-                Back to dashboard
-                <span class="ms-2">→</span>
-            </a>
+            <div><span class="artisan-dashboard-eyebrow">BOOKING REQUESTS</span><h1>Requests from customers</h1></div>
+            <a href="{{ url_for('artisan_dashboard') }}" class="hero-btn hero-btn-secondary">Back to dashboard <span class="ms-2">→</span></a>
         </header>
-
         {% if bookings %}
-            <div class="bookings-table-wrap">
-                <table class="bookings-table">
-                    <thead>
-                        <tr>
-                            <th>Customer</th>
-                            <th>Service</th>
-                            <th>Date &amp; time</th>
-                            <th>Status</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for booking in bookings %}
-                            <tr>
-                                <td>{{ booking.customer.full_name }}</td>
-                                <td>{{ booking.service.name }}</td>
-                                <td>{{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</td>
-                                <td><span class="al-status-badge al-status-{{ booking.status }}">{{ booking.status|capitalize }}</span></td>
-                                <td class="al-table-actions">
-                                    {% if booking.status == "pending" %}
-                                        <form method="POST" action="{{ url_for('respond_booking', booking_id=booking.id) }}">
-                                            <input type="hidden" name="action" value="accept">
-                                            <button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-accept">Accept</button>
-                                        </form>
-                                        <form method="POST" action="{{ url_for('respond_booking', booking_id=booking.id) }}">
-                                            <input type="hidden" name="action" value="decline">
-                                            <button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-decline">Decline</button>
-                                        </form>
-                                    {% elif booking.status == "accepted" %}
-                                        <form method="POST" action="{{ url_for('respond_booking', booking_id=booking.id) }}">
-                                            <input type="hidden" name="action" value="complete">
-                                            <button type="submit" class="al-dashboard-secondary-btn al-table-action">Mark completed</button>
-                                        </form>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="bookings-table-wrap">
+            <table class="bookings-table">
+                <thead><tr><th>Customer</th><th>Service</th><th>Date &amp; time</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.customer.full_name }}</td>
+                    <td>{{ booking.service.name }}</td>
+                    <td>{{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</td>
+                    <td><span class="al-status-badge al-status-{{ booking.status }}">{{ booking.status|replace('_', ' ')|capitalize }}</span></td>
+                    <td class="al-table-actions">
+                        {% if booking.status == 'pending' %}
+                            <form method="POST" action="{{ url_for('respond_booking', booking_id=booking.id) }}"><input type="hidden" name="action" value="accept"><button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-accept">Accept</button></form>
+                            <form method="POST" action="{{ url_for('respond_booking', booking_id=booking.id) }}"><input type="hidden" name="action" value="decline"><button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-decline">Decline</button></form>
+                        {% elif booking.status == 'accepted' %}
+                            <form method="POST" action="{{ url_for('respond_booking', booking_id=booking.id) }}"><input type="hidden" name="action" value="complete"><button type="submit" class="al-dashboard-secondary-btn al-table-action">Mark work completed</button></form>
+                        {% elif booking.status == 'awaiting_customer_confirmation' %}
+                            <span class="al-booking-waiting">Waiting for customer confirmation</span>
+                        {% elif booking.status == 'completed' %}
+                            <span class="al-booking-done">Completed</span>
+                        {% elif booking.status == 'not_completed' %}
+                            <span class="al-booking-not-done">Customer reported not completed</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
-            <div class="artisan-empty-state">
-                <div class="artisan-empty-icon">+</div>
-                <h3>No booking requests yet</h3>
-                <p>When a customer books one of your services, it will show up here.</p>
-            </div>
+        <div class="artisan-empty-state"><div class="artisan-empty-icon">+</div><h3>No booking requests yet</h3><p>When a customer books one of your services, it will show up here.</p></div>
         {% endif %}
     </div>
 </section>
-
 {% endblock %}
