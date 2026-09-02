@@ -3,19 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ArtisanLink connects customers with trusted local artisans for quality services.">
     <title>{% block title %}ArtisanLink{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+    <a class="al-skip-link" href="#main-content">Skip to content</a>
+
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark" aria-label="Main navigation">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="ArtisanLink" class="navbar-logo"></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <a class="navbar-brand" href="{{ url_for('home') }}" aria-label="ArtisanLink home">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ArtisanLink" class="navbar-logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('artisans') }}">Find Artisans</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('services') }}">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">Contact Us</a></li>
                     {% if session.get("user_id") %}
                         {% if session.get("user_role") == "artisan" %}
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('artisan_dashboard') }}">Dashboard</a></li>
@@ -25,14 +37,10 @@
                         {% else %}
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('customer_dashboard') }}">Dashboard</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('my_bookings') }}">My Bookings</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('become_artisan') }}">Become an Artisan</a></li>
                         {% endif %}
-                        <li class="nav-item"><span class="nav-link">Hi, {{ session.get("user_name") }}</span></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+                        <li class="nav-item al-nav-user"><span class="nav-link">Hi, {{ session.get("user_name") }}</span></li>
+                        <li class="nav-item"><a class="nav-link al-nav-logout" href="{{ url_for('logout') }}">Logout</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('services') }}">Services</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About Us</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">Contact Us</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('register', role='artisan') }}">Become an Artisan</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('register', role='customer') }}">Register</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
@@ -43,10 +51,44 @@
     </nav>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}<div class="flash-stack" aria-live="polite">{% for category, message in messages %}<div class="alert alert-{{ category }} alert-dismissible fade show artisan-flash" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>{% endfor %}</div>{% endif %}
+        {% if messages %}
+            <div class="flash-stack" aria-live="polite">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show artisan-flash" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     {% endwith %}
 
-    <main class="flex-grow-1">{% block content %}{% endblock %}</main>
+    <main id="main-content" class="flex-grow-1">{% block content %}{% endblock %}</main>
+
+    <footer class="al-site-footer">
+        <div class="container">
+            <div class="al-footer-grid">
+                <div>
+                    <a href="{{ url_for('home') }}" class="al-footer-brand">ArtisanLink</a>
+                    <p>Connecting you with trusted local artisans for quality services.</p>
+                </div>
+                <div>
+                    <h2>Explore</h2>
+                    <a href="{{ url_for('artisans') }}">Find Artisans</a>
+                    <a href="{{ url_for('services') }}">Services</a>
+                    <a href="{{ url_for('about') }}">About Us</a>
+                </div>
+                <div>
+                    <h2>Support</h2>
+                    <a href="{{ url_for('contact') }}">Contact Us</a>
+                    <button type="button" class="al-footer-help" id="helpCenterTrigger">Help Center</button>
+                </div>
+            </div>
+            <div class="al-footer-bottom"><span>© {{ now().year if now is defined else 2026 }} ArtisanLink. All rights reserved.</span><span>Built for local communities.</span></div>
+        </div>
+    </footer>
+
+    <button type="button" class="al-back-top" id="backToTop" aria-label="Back to top" title="Back to top">↑</button>
 
     <div class="help-overlay" id="helpOverlay" aria-hidden="true">
         <div class="help-modal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
@@ -60,14 +102,22 @@
             <div class="help-modal-footer"><span>Need more help?</span><a href="mailto:support@artisanlink.com" class="help-contact">Contact Support →</a></div>
         </div>
     </div>
+
     <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const trigger=document.getElementById("helpCenterTrigger"), overlay=document.getElementById("helpOverlay"), close=document.getElementById("helpClose");
-        if(trigger) trigger.addEventListener("click", function(e){e.preventDefault();overlay.classList.add("active");overlay.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";});
-        function closeHelp(){overlay.classList.remove("active");overlay.setAttribute("aria-hidden","true");document.body.style.overflow="";}
-        if(close) close.addEventListener("click",closeHelp);
-        if(overlay) overlay.addEventListener("click",function(e){if(e.target===overlay)closeHelp();});
-        document.addEventListener("keydown",function(e){if(e.key==="Escape"&&overlay.classList.contains("active"))closeHelp();});
+        const trigger = document.getElementById("helpCenterTrigger");
+        const overlay = document.getElementById("helpOverlay");
+        const close = document.getElementById("helpClose");
+        const backTop = document.getElementById("backToTop");
+        if (trigger && overlay) trigger.addEventListener("click", function () { overlay.classList.add("active"); overlay.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden"; });
+        function closeHelp() { if (!overlay) return; overlay.classList.remove("active"); overlay.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
+        if (close) close.addEventListener("click", closeHelp);
+        if (overlay) overlay.addEventListener("click", function (e) { if (e.target === overlay) closeHelp(); });
+        document.addEventListener("keydown", function (e) { if (e.key === "Escape" && overlay && overlay.classList.contains("active")) closeHelp(); });
+        function toggleTop() { if (backTop) backTop.classList.toggle("visible", window.scrollY > 420); }
+        window.addEventListener("scroll", toggleTop, { passive: true });
+        toggleTop();
+        if (backTop) backTop.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: "smooth" }); });
     });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
