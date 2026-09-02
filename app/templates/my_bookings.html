@@ -18,13 +18,13 @@
                 {% for booking in bookings %}
                 <tr>
                     <td><a href="{{ url_for('artisan_profile', artisan_id=booking.artisan.id) }}">{{ booking.artisan.user.full_name }}</a></td>
-                    <td>{{ booking.service.name }}{% if booking.status == 'negotiating' and booking.proposals %}<div class="al-proposal-note">Proposal: ₦{{ "{:,.0f}".format(booking.proposals[0].proposed_price) }}</div>{% endif %}</td>
+                    <td>{{ booking.service.name }}{% if booking.status == 'negotiating' and booking.proposals %}<div class="al-proposal-note">Offer: ₦{{ "{:,.0f}".format(booking.proposals[0].proposed_price) }}</div>{% endif %}</td>
                     <td>{{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</td>
                     <td><span class="al-status-badge al-status-{{ booking.status }}">{{ booking.status|replace('_', ' ')|capitalize }}</span></td>
                     <td class="al-table-actions">
                         {% if booking.status == 'pending' %}
                             <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.id) }}" onsubmit="return confirm('Cancel this booking request?');"><button type="submit" class="al-dashboard-secondary-btn al-table-action">Cancel</button></form>
-                            <button type="button" class="al-dashboard-secondary-btn al-table-action" data-bs-toggle="modal" data-bs-target="#counterModal{{ booking.id }}">Make an offer</button>
+                            <a href="{{ url_for('customer_negotiate_booking', booking_id=booking.id) }}" class="al-dashboard-secondary-btn al-table-action">Make an offer</a>
                         {% elif booking.status == 'negotiating' and booking.proposals %}
                             {% set proposal = booking.proposals[0] %}
                             {% if proposal.status == 'pending' and proposal.proposed_by == 'artisan' %}
@@ -35,7 +35,7 @@
                                     <div class="completion-actions">
                                         <form method="POST" action="{{ url_for('respond_customer_proposal', booking_id=booking.id, proposal_id=proposal.id) }}"><input type="hidden" name="action" value="accept"><button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-accept">Accept</button></form>
                                         <form method="POST" action="{{ url_for('respond_customer_proposal', booking_id=booking.id, proposal_id=proposal.id) }}"><input type="hidden" name="action" value="reject"><button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-decline">Reject</button></form>
-                                        <button type="button" class="al-dashboard-secondary-btn al-table-action" data-bs-toggle="modal" data-bs-target="#counterModal{{ booking.id }}">Counter</button>
+                                        <a href="{{ url_for('customer_negotiate_booking', booking_id=booking.id) }}" class="al-dashboard-secondary-btn al-table-action">Counter</a>
                                     </div>
                                 </div>
                             {% else %}
@@ -65,19 +65,6 @@
                         {% endif %}
                     </td>
                 </tr>
-                {% if booking.status in ['pending', 'negotiating'] %}
-                <div class="modal fade" id="counterModal{{ booking.id }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered"><div class="modal-content al-modal-content"><form method="POST" action="{{ url_for('customer_counter_proposal', booking_id=booking.id) }}">
-                        <div class="modal-header"><h5 class="modal-title">Make an offer</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
-                        <div class="modal-body">
-                            <div class="mb-3"><label class="form-label" for="price{{ booking.id }}">Proposed price (₦)</label><input type="number" min="1" step="0.01" class="form-control" id="price{{ booking.id }}" name="proposed_price" value="{{ booking.service.price }}" required></div>
-                            <div class="mb-3"><label class="form-label" for="date{{ booking.id }}">Proposed date and time</label><input type="datetime-local" class="form-control" id="date{{ booking.id }}" name="proposed_date" value="{{ booking.booking_date.strftime('%Y-%m-%dT%H:%M') }}" required></div>
-                            <div><label class="form-label" for="message{{ booking.id }}">Message</label><textarea class="form-control" id="message{{ booking.id }}" name="message" rows="3" maxlength="1000" placeholder="Add a note about your offer."></textarea></div>
-                        </div>
-                        <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn al-modal-submit">Send offer</button></div>
-                    </form></div></div>
-                </div>
-                {% endif %}
                 {% endfor %}
                 </tbody>
             </table>
