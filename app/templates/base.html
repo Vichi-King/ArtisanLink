@@ -50,37 +50,61 @@
     {% endwith %}
     <main id="main-content" class="flex-grow-1">{% block content %}{% endblock %}</main>
 
-    <footer class="al-site-footer">
+    <footer class="site-footer">
         <div class="container">
-            <div class="al-footer-grid">
-                <div class="al-footer-brand-wrap">
-                    <a href="{{ url_for('home') }}" class="al-footer-brand" aria-label="ArtisanLink home"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="ArtisanLink"></a>
-                    <p class="al-footer-tagline">Skilled hands. Trusted service.</p>
-                    <p class="al-footer-description">Connecting customers with skilled local artisans for everyday jobs and professional services.</p>
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <a href="{{ url_for('home') }}" class="footer-logo" aria-label="ArtisanLink home">
+                        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ArtisanLink">
+                    </a>
+                    <p class="footer-tagline">Skilled hands. Trusted service.</p>
+                    <p class="footer-description">Connecting customers with skilled local artisans for everyday jobs and professional services.</p>
                 </div>
-                <div class="al-footer-column">
-                    <h2>Platform</h2>
-                    <a href="{{ url_for('services') }}">Services</a>
-                    <a href="{{ url_for('artisans') }}">Find an Artisan</a>
-                    <a href="{{ url_for('home') }}#how-it-works">How It Works</a>
-                    <a href="{{ url_for('artisans') }}">Reviews</a>
+                <div class="footer-column">
+                    <h3>Platform</h3>
+                    <ul>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="{{ url_for('artisans') }}">Find an Artisan</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#">Reviews</a></li>
+                    </ul>
                 </div>
-                <div class="al-footer-column">
-                    <h2>Company</h2>
-                    <a href="{{ url_for('about') }}">About Us</a>
-                    <a href="{{ url_for('contact') }}">Contact</a>
-                    <a href="{{ url_for('become_artisan') }}">Become an Artisan</a>
-                    <button type="button" id="helpCenterTrigger">Help Center</button>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="{{ url_for('about') }}">About Us</a></li>
+                        <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                        <li><a href="{{ url_for('register', role='artisan') }}">Become an Artisan</a></li>
+                        <li><a href="#" class="help-trigger" id="helpCenterTrigger">Help Center</a></li>
+                    </ul>
                 </div>
-                <div class="al-footer-column">
-                    <h2>Account</h2>
-                    <a href="{{ url_for('login') }}">Sign In</a>
-                    <a href="{{ url_for('register', role='customer') }}">Create Account</a>
+                <div class="footer-column">
+                    <h3>Account</h3>
+                    <ul>
+                        {% if session.get("user_id") %}
+                            {% if session.get("user_role") == "artisan" %}
+                                <li><a href="{{ url_for('artisan_dashboard') }}">Dashboard</a></li>
+                                <li><a href="{{ url_for('artisan_bookings') }}">Booking Requests</a></li>
+                            {% elif session.get("user_role") == "admin" %}
+                                <li><a href="{{ url_for('admin_dashboard') }}">Admin Panel</a></li>
+                            {% else %}
+                                <li><a href="{{ url_for('customer_dashboard') }}">Dashboard</a></li>
+                                <li><a href="{{ url_for('my_bookings') }}">My Bookings</a></li>
+                                <li><a href="{{ url_for('become_artisan') }}">Become an Artisan</a></li>
+                            {% endif %}
+                        {% else %}
+                            <li><a href="{{ url_for('login') }}">Sign In</a></li>
+                            <li><a href="{{ url_for('register', role='customer') }}">Create Account</a></li>
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
-            <div class="al-footer-bottom">
-                <span>© {{ now().year if now is defined else 2026 }} ArtisanLink. All rights reserved.</span>
-                <div class="al-footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+            <div class="footer-bottom">
+                <p>© 2026 ArtisanLink. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#" class="legal-trigger" data-legal="privacy">Privacy Policy</a>
+                    <a href="#" class="legal-trigger" data-legal="terms">Terms of Service</a>
+                </div>
             </div>
         </div>
     </footer>
@@ -101,7 +125,7 @@
     <script>
     document.addEventListener("DOMContentLoaded", function () {
         const trigger = document.getElementById("helpCenterTrigger"), overlay = document.getElementById("helpOverlay"), close = document.getElementById("helpClose"), backTop = document.getElementById("backToTop");
-        if (trigger && overlay) trigger.addEventListener("click", function () { overlay.classList.add("active"); overlay.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden"; });
+        if (trigger && overlay) trigger.addEventListener("click", function (e) { e.preventDefault(); overlay.classList.add("active"); overlay.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden"; });
         function closeHelp() { if (!overlay) return; overlay.classList.remove("active"); overlay.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
         if (close) close.addEventListener("click", closeHelp);
         if (overlay) overlay.addEventListener("click", function (e) { if (e.target === overlay) closeHelp(); });
