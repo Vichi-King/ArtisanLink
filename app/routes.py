@@ -336,8 +336,8 @@ def register_routes(app):
         return {"html": render_template("_artisan_cards.html", artisans=artisans), "has_more": page * page_size < total_artisans}
 
     @app.route("/artisans/<int:artisan_id>")
-    @login_required
     def artisan_profile(artisan_id):
+        """Public artisan profile; authentication is only required when booking."""
         profile = next((row for row in ranked_artisans() if row[0].id == artisan_id), None)
         if not profile:
             flash("That artisan profile is not available.", "danger")
