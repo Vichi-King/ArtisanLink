@@ -1,0 +1,27 @@
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content al-modal-content">
+            <form method="POST" action="{{ url_for('delete_account') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteAccountModalLabel">Delete account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>This action is permanent.</strong> Your account and profile data will be removed and cannot be recovered.</p>
+                    <div class="mb-3">
+                        <label for="delete_current_password" class="form-label">Current password</label>
+                        <input type="password" class="form-control" id="delete_current_password" name="current_password" required autocomplete="current-password">
+                    </div>
+                    <div>
+                        <label for="delete_confirmation" class="form-label">Type <strong>DELETE</strong> to confirm</label>
+                        <input type="text" class="form-control" id="delete_confirmation" name="confirmation" required autocomplete="off">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Keep account</button>
+                    <button type="submit" class="btn al-danger-submit">Delete permanently</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
