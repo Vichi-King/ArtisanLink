@@ -7,7 +7,7 @@ load_dotenv()
 
 
 class Config:
-    SECRET_KEY = os.getenv("SECRET_KEY")
+    SECRET_KEY = os.getenv("SECRET_KEY") or "change-this-secret-in-production"
 
     _db_url = os.getenv("DATABASE_URL")
     if _db_url and _db_url.startswith("mysql://"):
@@ -15,3 +15,7 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = _db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "0").lower() in {"1", "true", "yes"}
