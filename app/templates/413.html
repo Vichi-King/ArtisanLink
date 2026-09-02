@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Upload Too Large | ArtisanLink{% endblock %}
+{% block content %}
+<section class="al-error-page" aria-labelledby="error-title">
+    <div class="al-error-card">
+        <span class="al-error-code">413</span>
+        <h1 id="error-title">That upload is too large.</h1>
+        <p>Please choose a smaller image or file. ArtisanLink accepts uploads up to 5 MB.</p>
+        <div class="al-error-actions">
+            <a href="javascript:history.back()" class="al-error-primary">Go Back</a>
+            <a href="{{ url_for('home') }}" class="al-error-secondary">Back to Home</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
