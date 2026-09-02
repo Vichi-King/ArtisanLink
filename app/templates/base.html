@@ -3,592 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>{% block title %}ArtisanLink{% endblock %}</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}"
-    >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
 </head>
-
 <body class="d-flex flex-column min-vh-100">
-
-    <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
-
         <div class="container">
-
-            <!-- Brand -->
-            <a
-                class="navbar-brand"
-                href="{{ url_for('home') }}"
-            >
-                <img
-                    src="{{ url_for('static', filename='images/logo.png') }}"
-                    alt="ArtisanLink"
-                    class="navbar-logo"
-                >
-            </a>
-
-
-            <!-- Mobile Menu Button -->
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#mainNavbar"
-                aria-controls="mainNavbar"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-            >
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-
-            <!-- Navigation Links -->
-            <div
-                class="collapse navbar-collapse"
-                id="mainNavbar"
-            >
-
+            <a class="navbar-brand" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="ArtisanLink" class="navbar-logo"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto">
-
-                    <!-- Home -->
-                    <li class="nav-item">
-                        <a
-                            class="nav-link"
-                            href="{{ url_for('home') }}"
-                        >
-                            Home
-                        </a>
-                    </li>
-
-
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
                     {% if session.get("user_id") %}
-
-                        <!-- Logged-in user -->
-
                         {% if session.get("user_role") == "artisan" %}
-
-                            <!-- Artisan navigation -->
-
-                            <li class="nav-item">
-                                <a
-                                    class="nav-link"
-                                    href="{{ url_for('artisan_dashboard') }}"
-                                >
-                                    Dashboard
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a
-                                    class="nav-link"
-                                    href="{{ url_for('artisan_bookings') }}"
-                                >
-                                    Booking Requests
-                                </a>
-                            </li>
-
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('artisan_dashboard') }}">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('artisan_bookings') }}">Booking Requests</a></li>
                         {% elif session.get("user_role") == "admin" %}
-
-                            <!-- Admin navigation -->
-
-                            <li class="nav-item">
-                                <a
-                                    class="nav-link"
-                                    href="{{ url_for('admin_dashboard') }}"
-                                >
-                                    Admin Panel
-                                </a>
-                            </li>
-
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Panel</a></li>
                         {% else %}
-
-                            <!-- Customer navigation -->
-
-                            <li class="nav-item">
-                                <a
-                                    class="nav-link"
-                                    href="{{ url_for('customer_dashboard') }}"
-                                >
-                                    Dashboard
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a
-                                    class="nav-link"
-                                    href="{{ url_for('my_bookings') }}"
-                                >
-                                    My Bookings
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a
-                                    class="nav-link"
-                                    href="{{ url_for('become_artisan') }}"
-                                >
-                                    Become an Artisan
-                                </a>
-                            </li>
-
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('customer_dashboard') }}">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('my_bookings') }}">My Bookings</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('become_artisan') }}">Become an Artisan</a></li>
                         {% endif %}
-
-
-                        <!-- User greeting -->
-
-                        <li class="nav-item">
-                            <span class="nav-link">
-                                Hi, {{ session.get("user_name") }}
-                            </span>
-                        </li>
-
-
-                        <!-- Logout -->
-
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ url_for('logout') }}"
-                            >
-                                Logout
-                            </a>
-                        </li>
-
-
+                        <li class="nav-item"><span class="nav-link">Hi, {{ session.get("user_name") }}</span></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
                     {% else %}
-
-                        <!-- Guest navigation -->
-                         
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ url_for('services') }}"
-                            >
-                                Services
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ url_for('about') }}"
-                            >
-                                About Us
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a
-                                class="nav-link" href="{{ url_for('contact') }}">
-                                Contact Us
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ url_for('register', role='artisan') }}"
-                            >
-                                Become an Artisan
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ url_for('register', role='customer') }}"
-                            >
-                                Register
-                            </a>
-                        </li>
-
-
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ url_for('login') }}"
-                            >
-                                Login
-                            </a>
-                        </li>
-
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('services') }}">Services</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">Contact Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('register', role='artisan') }}">Become an Artisan</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('register', role='customer') }}">Register</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
                     {% endif %}
-
                 </ul>
-
             </div>
-
         </div>
-
     </nav>
 
-
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-stack" aria-live="polite">
-                {% for category, message in messages %}
-                    <div
-                        class="alert alert-{{ category }} alert-dismissible fade show artisan-flash"
-                        role="alert"
-                    >
-                        {{ message }}
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="alert"
-                            aria-label="Close"
-                        ></button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+        {% if messages %}<div class="flash-stack" aria-live="polite">{% for category, message in messages %}<div class="alert alert-{{ category }} alert-dismissible fade show artisan-flash" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>{% endfor %}</div>{% endif %}
     {% endwith %}
 
-    <!-- Main Content -->
+    <main class="flex-grow-1">{% block content %}{% endblock %}</main>
 
-    <main class="flex-grow-1">
-
-
-        <!-- Page Content -->
-
-        {% block content %}
-        {% endblock %}
-
-    </main>
-
-<!-- =====================================================
-     HELP CENTER OVERLAY
-     ===================================================== -->
-
-<div
-    class="help-overlay"
-    id="helpOverlay"
-    aria-hidden="true"
->
-
-    <div
-        class="help-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="helpModalTitle"
-    >
-
-        <!-- Header -->
-
-        <div class="help-modal-header">
-
-            <div>
-
-                <span class="help-modal-label">
-                    ARTISANLINK SUPPORT
-                </span>
-
-                <h2 id="helpModalTitle">
-                    Help Center
-                </h2>
-
+    <div class="help-overlay" id="helpOverlay" aria-hidden="true">
+        <div class="help-modal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
+            <div class="help-modal-header"><div><span class="help-modal-label">ARTISANLINK SUPPORT</span><h2 id="helpModalTitle">Help Center</h2></div><button type="button" class="help-close" id="helpClose" aria-label="Close Help Center">×</button></div>
+            <div class="help-modal-content">
+                <p class="help-intro">Find quick answers to common questions about using ArtisanLink.</p>
+                <div class="help-section"><div class="help-section-title">FOR CUSTOMERS</div><details class="help-item"><summary>How do I find an artisan?<span>+</span></summary><p>Browse available services, choose the service you need, and explore artisans who offer it.</p></details><details class="help-item"><summary>How do I book an artisan?<span>+</span></summary><p>Open an artisan's profile, review their information and ratings, then choose a service and send a booking request.</p></details><details class="help-item"><summary>Can I review an artisan?<span>+</span></summary><p>Yes. After the artisan marks the work complete, confirm completion and then submit your feedback.</p></details></div>
+                <div class="help-section"><div class="help-section-title">FOR ARTISANS</div><details class="help-item"><summary>How do I become an artisan?<span>+</span></summary><p>Create an ArtisanLink account and provide your professional information and services.</p></details><details class="help-item"><summary>How do I manage my bookings?<span>+</span></summary><p>Use your artisan dashboard to manage incoming requests and update the progress of accepted work.</p></details></div>
+                <div class="help-section"><div class="help-section-title">GENERAL</div><details class="help-item"><summary>Is ArtisanLink free to use?<span>+</span></summary><p>Creating an account and discovering services is free. Service prices are set by artisans.</p></details><details class="help-item"><summary>How can I get additional assistance?<span>+</span></summary><p>Please contact the ArtisanLink support team.</p></details></div>
             </div>
-
-            <button
-                type="button"
-                class="help-close"
-                id="helpClose"
-                aria-label="Close Help Center"
-            >
-                ×
-            </button>
-
+            <div class="help-modal-footer"><span>Need more help?</span><a href="mailto:support@artisanlink.com" class="help-contact">Contact Support →</a></div>
         </div>
-
-
-        <!-- Content -->
-
-        <div class="help-modal-content">
-
-            <p class="help-intro">
-                Find quick answers to common questions about using
-                ArtisanLink.
-            </p>
-
-
-            <!-- Customer FAQ -->
-
-            <div class="help-section">
-
-                <div class="help-section-title">
-                    FOR CUSTOMERS
-                </div>
-
-
-                <details class="help-item">
-
-                    <summary>
-                        How do I find an artisan?
-                        <span>+</span>
-                    </summary>
-
-                    <p>
-                        Browse the available services from the homepage,
-                        choose the service you need, and explore artisans
-                        who offer that service.
-                    </p>
-
-                </details>
-
-
-                <details class="help-item">
-
-                    <summary>
-                        How do I book an artisan?
-                        <span>+</span>
-                    </summary>
-
-                    <p>
-                        Open an artisan's profile, review their information
-                        and ratings, then follow the booking instructions
-                        to send a service request.
-                    </p>
-
-                </details>
-
-
-                <details class="help-item">
-
-                    <summary>
-                        Can I review an artisan?
-                        <span>+</span>
-                    </summary>
-
-                    <p>
-                        Yes. After completing a service, customers can
-                        provide feedback through the platform's review
-                        system.
-                    </p>
-
-                </details>
-
-            </div>
-
-
-            <!-- Artisan FAQ -->
-
-            <div class="help-section">
-
-                <div class="help-section-title">
-                    FOR ARTISANS
-                </div>
-
-
-                <details class="help-item">
-
-                    <summary>
-                        How do I become an artisan?
-                        <span>+</span>
-                    </summary>
-
-                    <p>
-                        Create an ArtisanLink account and select the option
-                        to become an artisan. You can then provide your
-                        professional information and services.
-                    </p>
-
-                </details>
-
-
-                <details class="help-item">
-
-                    <summary>
-                        How do I manage my bookings?
-                        <span>+</span>
-                    </summary>
-
-                    <p>
-                        Accepted artisans can manage incoming service
-                        requests and their work through the artisan
-                        dashboard.
-                    </p>
-
-                </details>
-
-            </div>
-
-
-            <!-- General -->
-
-            <div class="help-section">
-
-                <div class="help-section-title">
-                    GENERAL
-                </div>
-
-
-                <details class="help-item">
-
-                    <summary>
-                        Is ArtisanLink free to use?
-                        <span>+</span>
-                    </summary>
-
-                    <p>
-                        Creating an account and discovering services on
-                        ArtisanLink is free. Any service charges or prices
-                        are determined according to the arrangement between
-                        customers and artisans.
-                    </p>
-
-                </details>
-
-
-                <details class="help-item">
-
-                    <summary>
-                        How can I get additional assistance?
-                        <span>+</span>
-                    </summary>
-
-                    <p>
-                        For assistance beyond the information provided here,
-                        please contact the ArtisanLink support team.
-                    </p>
-
-                </details>
-
-            </div>
-
-        </div>
-
-
-        <!-- Footer -->
-
-        <div class="help-modal-footer">
-
-            <span>
-                Need more help?
-            </span>
-
-            <a
-                href="mailto:support@artisanlink.com"
-                class="help-contact"
-            >
-                Contact Support →
-            </a>
-
-        </div>
-
     </div>
-
-</div>
-
-<script>
+    <script>
     document.addEventListener("DOMContentLoaded", function () {
-
-        const helpTrigger =
-            document.getElementById("helpCenterTrigger");
-
-        const helpOverlay =
-            document.getElementById("helpOverlay");
-
-        const helpClose =
-            document.getElementById("helpClose");
-
-
-        /* =================================================
-           OPEN HELP CENTER
-           ================================================= */
-
-        if (helpTrigger) {
-
-            helpTrigger.addEventListener("click", function (event) {
-
-                event.preventDefault();
-
-                helpOverlay.classList.add("active");
-
-                helpOverlay.setAttribute(
-                    "aria-hidden",
-                    "false"
-                );
-
-                document.body.style.overflow = "hidden";
-
-            });
-
-        }
-
-
-        /* =================================================
-           CLOSE HELP CENTER
-           ================================================= */
-
-        function closeHelpCenter() {
-
-            helpOverlay.classList.remove("active");
-
-            helpOverlay.setAttribute(
-                "aria-hidden",
-                "true"
-            );
-
-            document.body.style.overflow = "";
-
-        }
-
-
-        helpClose.addEventListener(
-            "click",
-            closeHelpCenter
-        );
-
-
-        /* Close by clicking backdrop */
-
-        helpOverlay.addEventListener(
-            "click",
-            function (event) {
-
-                if (event.target === helpOverlay) {
-
-                    closeHelpCenter();
-
-                }
-
-            }
-        );
-
-
-        /* Close with Escape */
-
-        document.addEventListener(
-            "keydown",
-            function (event) {
-
-                if (
-                    event.key === "Escape" &&
-                    helpOverlay.classList.contains("active")
-                ) {
-
-                    closeHelpCenter();
-
-                }
-
-            }
-        );
-
+        const trigger=document.getElementById("helpCenterTrigger"), overlay=document.getElementById("helpOverlay"), close=document.getElementById("helpClose");
+        if(trigger) trigger.addEventListener("click", function(e){e.preventDefault();overlay.classList.add("active");overlay.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";});
+        function closeHelp(){overlay.classList.remove("active");overlay.setAttribute("aria-hidden","true");document.body.style.overflow="";}
+        if(close) close.addEventListener("click",closeHelp);
+        if(overlay) overlay.addEventListener("click",function(e){if(e.target===overlay)closeHelp();});
+        document.addEventListener("keydown",function(e){if(e.key==="Escape"&&overlay.classList.contains("active"))closeHelp();});
     });
-</script>
-
-    <!-- Bootstrap JavaScript -->
-
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    ></script>
-
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
