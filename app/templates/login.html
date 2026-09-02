@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Login | ArtisanLink{% endblock %}
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 <section class="auth-page auth-login-page">
     <div class="auth-brand-panel"><div class="auth-brand-content"><div class="auth-brand-message"><span class="auth-eyebrow">WELCOME BACK</span><h1>Let's get <span>to work.</span></h1><p>Access your ArtisanLink account and continue connecting with skilled local professionals.</p></div><div class="auth-brand-footer"><span>Skilled Hands.</span><span>Trusted Service.</span></div></div></div>
     <div class="auth-form-panel"><div class="auth-form-wrapper"><div class="auth-heading"><span>WELCOME BACK</span><h2>Login to ArtisanLink</h2><p>Enter your details to continue.</p></div>
         <form method="POST" class="auth-form"><div class="auth-field"><label for="email">Email Address</label><input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="email" required></div><div class="auth-field"><label for="password">Password</label><input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required></div><button type="submit" class="auth-submit">Login <span>→</span></button></form>
-        <div class="auth-forgot-link"><a href="{{ url_for('forgot_password') }}">Forgot password?</a></div>
-        <div class="auth-switch"><span>Don't have an account?</span><a href="{{ url_for('register', role='customer') }}">Create one</a></div>
+        <div class="auth-account-links"><span>Don't have an account? <a href="{{ url_for('register', role='customer') }}">Create one</a></span><a href="{{ url_for('forgot_password') }}">Forgot password?</a></div>
     </div></div>
 </section>
 {% endblock %}
