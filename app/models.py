@@ -73,7 +73,7 @@ class BookingProposal(db.Model):
     __tablename__ = "booking_proposals"
 
     id = db.Column(db.Integer, primary_key=True)
-    booking_id = db.Column(db.Integer, db.ForeignKey("bookings.id"), nullable=False)
+    booking_id = db.Column(db.Integer, db.ForeignKey("bookings.id", ondelete="CASCADE"), nullable=False)
     proposed_by = db.Column(db.String(20), nullable=False)
     proposed_price = db.Column(db.Numeric(10, 2), nullable=False)
     proposed_date = db.Column(db.DateTime, nullable=False)
