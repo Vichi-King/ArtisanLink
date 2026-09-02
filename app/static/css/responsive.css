@@ -3,46 +3,20 @@
 * { box-sizing: border-box; }
 img { max-width: 100%; }
 
-.bookings-header-actions {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-}
+/* Shared account / booking helpers */
+.bookings-header-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+.al-dashboard-back-btn { background: #111 !important; border-color: #111 !important; color: #fff !important; }
+.al-dashboard-back-btn:hover, .al-dashboard-back-btn:focus { background: #f2c94c !important; border-color: #f2c94c !important; color: #111 !important; }
 
-.artisan-account-danger {
-    margin-top: 28px;
-    padding: 28px 30px;
-    border: 1px solid rgba(180, 30, 30, .18);
-    border-radius: 18px;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-}
+.artisan-account-danger { margin-top: 28px; padding: 28px 30px; border: 1px solid rgba(180, 30, 30, .18); border-radius: 18px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .artisan-account-danger span { font-size: .72rem; font-weight: 800; letter-spacing: 1.8px; color: #a33; }
 .artisan-account-danger h2 { margin: 5px 0 6px; font-size: 1.15rem; }
 .artisan-account-danger p { margin: 0; color: #777; line-height: 1.55; }
-.al-danger-outline-btn {
-    flex: 0 0 auto;
-    border: 1px solid #b42318;
-    background: transparent;
-    color: #b42318;
-    border-radius: 10px;
-    padding: 11px 18px;
-    font-weight: 700;
-}
+.al-danger-outline-btn { flex: 0 0 auto; border: 1px solid #b42318; background: transparent; color: #b42318; border-radius: 10px; padding: 11px 18px; font-weight: 700; }
 .al-danger-outline-btn:hover { background: #b42318; color: #fff; }
 .al-danger-submit { background: #b42318 !important; border-color: #b42318 !important; color: #fff !important; }
 
-.al-booking-waiting, .al-booking-done, .al-booking-not-done, .al-booking-muted {
-    display: inline-block;
-    max-width: 230px;
-    font-size: .82rem;
-    line-height: 1.4;
-    color: #777;
-}
+.al-booking-waiting, .al-booking-done, .al-booking-not-done, .al-booking-muted { display: inline-block; max-width: 230px; font-size: .82rem; line-height: 1.4; color: #777; }
 .al-booking-done { color: #287a45; font-weight: 700; }
 .al-booking-not-done { color: #a06000; }
 .completion-confirmation strong { display: block; margin-bottom: 8px; font-size: .84rem; }
@@ -53,12 +27,10 @@ img { max-width: 100%; }
     .navbar-collapse { padding: 10px 0 14px; }
     .navbar-nav { gap: 2px; }
     .navbar .nav-link { padding: 10px 8px !important; }
-
     .artisan-dashboard { overflow-x: hidden; }
     .artisan-dashboard-grid { grid-template-columns: 1fr !important; }
     .artisan-dashboard-hero { gap: 20px; }
     .artisan-dashboard-stats { grid-template-columns: repeat(3, 1fr) !important; }
-
     .bookings-table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 14px; }
     .bookings-table { min-width: 760px; }
     .bookings-list-header { gap: 18px; align-items: flex-start; }
@@ -67,11 +39,9 @@ img { max-width: 100%; }
 @media (max-width: 767.98px) {
     body { overflow-x: hidden; }
     .container { width: 100%; max-width: 100%; padding-left: 16px !important; padding-right: 16px !important; }
-
     .navbar { min-height: 64px; }
     .navbar-logo { width: 112px; }
     .navbar-toggler { padding: 6px 8px; }
-
     .artisan-dashboard { padding-top: 36px; padding-bottom: 45px; }
     .artisan-dashboard-hero { display: flex; flex-direction: column; align-items: stretch; }
     .artisan-dashboard-intro h1 { font-size: clamp(2.25rem, 11vw, 3.2rem); line-height: 1.02; }
@@ -89,32 +59,25 @@ img { max-width: 100%; }
     .artisan-service-item { grid-template-columns: auto minmax(0, 1fr); gap: 10px; }
     .artisan-service-item > strong { grid-column: 2; }
     .artisan-service-item-actions { grid-column: 2; justify-content: flex-start; }
-
     .customer-dashboard-suggested { margin-top: 18px; }
     .customer-dashboard-suggested .artisan-card-heading { align-items: flex-start; flex-direction: column; }
     .artisan-grid { grid-template-columns: 1fr !important; }
-
     .artisan-account-danger { flex-direction: column; align-items: stretch; padding: 20px; }
     .al-danger-outline-btn { width: 100%; }
-
     .bookings-list-section { padding-top: 36px !important; padding-bottom: 45px !important; }
     .bookings-list-header { flex-direction: column; align-items: stretch !important; }
     .bookings-list-header h1 { font-size: clamp(2rem, 9vw, 2.8rem); line-height: 1.05; }
     .bookings-header-actions { display: grid; grid-template-columns: 1fr; }
-    .bookings-header-actions .hero-btn { width: 100%; }
-    .bookings-list-header > .hero-btn { width: 100%; }
-
+    .bookings-header-actions .hero-btn, .bookings-list-header > .hero-btn { width: 100%; }
     .bookings-table-wrap { margin-top: 18px; box-shadow: none; }
     .bookings-table { min-width: 700px; }
     .al-table-actions { white-space: normal; }
     .completion-actions { flex-direction: column; align-items: stretch; }
     .completion-actions form, .completion-actions button { width: 100%; }
-
     .modal-dialog { margin: 12px; }
     .al-modal-content { border-radius: 16px; }
     .modal-footer { flex-wrap: wrap; }
     .modal-footer .btn { flex: 1 1 140px; }
-
     .public-artisan-profile { overflow-x: hidden; }
     .public-artisan-hero { grid-template-columns: 1fr !important; text-align: center; gap: 18px !important; }
     .public-artisan-photo { margin: 0 auto; }
