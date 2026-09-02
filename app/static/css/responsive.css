@@ -19,7 +19,6 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 .al-back-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
 .al-back-top:hover { background: #f2c94c; color: #111; }
 
-/* Shared account / booking helpers */
 .bookings-header-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
 .al-dashboard-back-btn { background: #111 !important; border-color: #111 !important; color: #fff !important; }
 .al-dashboard-back-btn:hover, .al-dashboard-back-btn:focus { background: #f2c94c !important; border-color: #f2c94c !important; color: #111 !important; }
@@ -36,7 +35,6 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 .completion-confirmation strong { display: block; margin-bottom: 8px; font-size: .84rem; }
 .completion-actions { display: flex; gap: 7px; flex-wrap: wrap; }
 
-/* Forms: keep controls easy to tap and prevent accidental horizontal overflow. */
 .form-control, .form-select, textarea, input, select { max-width: 100%; }
 .form-control, .form-select { min-height: 44px; }
 textarea.form-control { min-height: 120px; }
@@ -61,14 +59,143 @@ textarea.form-control { min-height: 120px; }
     .bookings-list-header { gap: 18px; align-items: flex-start; }
 }
 
+/* =========================================================
+   MOBILE HOME EXPERIENCE
+   Compact version of the desktop composition — not a separate
+   mobile design. The same visual hierarchy is preserved while
+   reducing scale, spacing and card dimensions.
+   ========================================================= */
 @media (max-width: 767.98px) {
     body { overflow-x: hidden; }
     .container { width: 100%; max-width: 100%; padding-left: 16px !important; padding-right: 16px !important; }
     .navbar { min-height: 64px; }
     .navbar-logo { width: 112px; }
     .navbar-toggler { padding: 6px 8px; }
-    .hero-section, .hero, .page-hero { min-height: auto; }
-    .hero-title { max-width: 100%; }
+
+    /* HERO */
+    .hero {
+        min-height: auto !important;
+        display: block;
+        background-position: 66% center;
+    }
+    .hero-content {
+        padding: 58px 0 55px !important;
+    }
+    .hero-eyebrow {
+        font-size: .68rem;
+        letter-spacing: 1.45px;
+        gap: 8px;
+        margin-bottom: 18px;
+    }
+    .hero-eyebrow::before { width: 32px; }
+    .hero-title {
+        max-width: 350px;
+        margin-bottom: 20px;
+        font-size: clamp(2.65rem, 11.5vw, 4rem) !important;
+        line-height: .98;
+        letter-spacing: -2px;
+    }
+    .hero-description {
+        max-width: 355px;
+        margin-bottom: 25px;
+        font-size: .98rem;
+        line-height: 1.55;
+    }
+    .hero-actions {
+        width: min(100%, 360px);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 11px;
+        margin-bottom: 0;
+    }
+    .hero-btn {
+        width: 100%;
+        min-height: 52px;
+        padding: 0 18px;
+        border-radius: 11px;
+        font-size: .94rem;
+    }
+    .hero-trust { display: none; }
+
+    /* Compact 2 x 2 desktop-style trust strip beneath hero content. */
+    .hero-stats {
+        position: relative !important;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        width: calc(100% - 32px);
+        margin: 0 auto 24px;
+        grid-template-columns: repeat(2, 1fr) !important;
+        border-radius: 16px;
+        box-shadow: 0 8px 28px rgba(0,0,0,.16);
+    }
+    .hero-stat {
+        min-width: 0;
+        gap: 10px;
+        padding: 16px 12px;
+        border-right: 1px solid rgba(0,0,0,.08) !important;
+        border-bottom: 1px solid rgba(0,0,0,.08);
+    }
+    .hero-stat:nth-child(2n) { border-right: none !important; }
+    .hero-stat:nth-child(n+3) { border-bottom: none; }
+    .hero-stat-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+    .hero-stat strong { font-size: .88rem; }
+    .hero-stat span { font-size: .68rem; line-height: 1.2; }
+
+    /* SERVICES — two cards per row, matching the compact desktop grid. */
+    .services-section { padding: 62px 0 72px !important; }
+    .services-header { margin-bottom: 28px !important; }
+    .services-eyebrow { font-size: .68rem; letter-spacing: 1.65px; gap: 8px; margin-bottom: 11px; }
+    .services-eyebrow::before, .services-eyebrow::after { width: 22px; }
+    .services-title {
+        font-size: clamp(2rem, 9vw, 2.7rem) !important;
+        letter-spacing: -1.5px;
+        line-height: .98;
+        margin-bottom: 12px;
+    }
+    .services-description { max-width: 340px; font-size: .9rem; line-height: 1.55; }
+    .services-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+    }
+    .service-card {
+        min-height: 190px !important;
+        height: 190px;
+        border-radius: 14px;
+        box-shadow: 0 8px 22px rgba(0,0,0,.1);
+    }
+    .service-content { padding: 15px !important; }
+    .service-content h3 {
+        margin-bottom: 5px;
+        font-size: 1rem;
+        line-height: 1.05;
+    }
+    .service-link { gap: 5px; font-size: .72rem; }
+    .service-link span { font-size: .9rem; }
+    .services-footer { margin-top: 28px !important; }
+    .services-footer .why-cta {
+        width: 100%;
+        max-width: 310px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* Remaining home sections */
+    .how-it-works { padding: 68px 0 75px !important; }
+    .how-header { margin-bottom: 45px !important; }
+    .how-title { font-size: 2.25rem !important; letter-spacing: -1.3px; }
+    .how-description { font-size: .9rem; line-height: 1.55; }
+    .featured-artisans { padding: 68px 0 75px !important; }
+    .featured-header { margin-bottom: 30px !important; }
+    .featured-title { font-size: 2.25rem !important; }
+    .why-artisanlink { padding-top: 68px !important; padding-bottom: 75px !important; }
+
+    /* Shared responsive pages */
+    .hero-section, .hero, .page-hero { max-width: 100%; }
     .artisan-dashboard { padding-top: 36px; padding-bottom: 45px; }
     .artisan-dashboard-hero { display: flex; flex-direction: column; align-items: stretch; }
     .artisan-dashboard-intro h1 { font-size: clamp(2.25rem, 11vw, 3.2rem); line-height: 1.02; }
@@ -119,11 +246,16 @@ textarea.form-control { min-height: 120px; }
 }
 
 @media (max-width: 420px) {
-    .hero-title { font-size: 2.75rem !important; }
-    .services-title, .how-title { font-size: 2.35rem !important; }
+    .hero-title { font-size: 2.55rem !important; }
+    .hero-content { padding-top: 48px !important; padding-bottom: 48px !important; }
+    .services-title, .how-title { font-size: 2.05rem !important; }
     .artisan-avatar { width: 48px; height: 48px; }
     .artisan-service-item { padding: 12px !important; }
     .al-dashboard-secondary-btn, .artisan-primary-action, .artisan-secondary-action { min-height: 44px; }
     .al-footer-grid { grid-template-columns: 1fr; }
     .al-footer-grid > div:first-child { grid-column: auto; }
+    .service-card { min-height: 178px !important; height: 178px; }
+    .service-content { padding: 13px !important; }
+    .service-content h3 { font-size: .93rem; }
+    .service-link { font-size: .68rem; }
 }
