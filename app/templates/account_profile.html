@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Account Settings | ArtisanLink{% endblock %}
+{% block content %}
+<section class="al-dashboard-page">
+    <div class="container al-dashboard-shell">
+        <header class="al-page-header"><div><span>ACCOUNT MANAGEMENT</span><h1>Account settings</h1><p>Keep your basic account information up to date.</p></div></header>
+        <div class="al-account-layout">
+            <article class="al-account-card">
+                <div class="al-dashboard-section-heading"><div><span>PROFILE INFORMATION</span><h2>Personal details</h2></div><div class="al-account-avatar">{% if user.profile_picture %}<img src="{{ url_for('static', filename='uploads/artisans/' ~ user.profile_picture) }}" alt="">{% else %}{{ user.full_name[:1]|upper }}{% endif %}</div></div>
+                <form method="POST" class="al-account-form">
+                    <label>Full name<input type="text" name="full_name" value="{{ user.full_name }}" required maxlength="100"></label>
+                    <label>Email address<input type="email" name="email" value="{{ user.email }}" required maxlength="120"></label>
+                    <div class="al-account-actions"><button type="submit" class="artisan-primary-action">Save changes <span>→</span></button><a href="{{ url_for('artisan_dashboard' if user.role == 'artisan' else 'customer_dashboard') }}" class="artisan-secondary-action">Cancel</a></div>
+                </form>
+            </article>
+            <aside class="al-account-card al-account-help"><span>SECURITY</span><h2>Password</h2><p>Use the password control on your dashboard to change your password securely.</p><a href="{{ url_for('artisan_dashboard' if user.role == 'artisan' else 'customer_dashboard') }}">Go to dashboard →</a></aside>
+        </div>
+    </div>
+</section>
+{% endblock %}
