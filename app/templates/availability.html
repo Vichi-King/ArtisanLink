@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Availability | ArtisanLink{% endblock %}
+{% block content %}
+<section class="al-profile-tool">
+  <div class="container al-tool-container">
+    <a href="{{ url_for('artisan_dashboard') }}" class="artisan-back-link">← Back to dashboard</a>
+    <div class="al-tool-header"><span class="artisan-dashboard-eyebrow">AVAILABILITY</span><h1>Set your working hours.</h1><p>Let customers know when you are available for bookings.</p></div>
+    <form method="POST" class="al-tool-card al-availability-card">
+      {% for slot in availability %}
+      <div class="al-day-row">
+        <label class="al-day-check"><input type="checkbox" name="available_{{ slot.day }}" {% if slot.is_available %}checked{% endif %}><strong>{{ slot.day }}</strong></label>
+        <div class="al-time-fields"><input type="time" name="start_{{ slot.day }}" value="{{ slot.start_time or '' }}" aria-label="{{ slot.day }} start time"><span>to</span><input type="time" name="end_{{ slot.day }}" value="{{ slot.end_time or '' }}" aria-label="{{ slot.day }} end time"></div>
+      </div>
+      {% endfor %}
+      <div class="al-tool-actions"><a href="{{ url_for('artisan_dashboard') }}">Cancel</a><button type="submit">Save availability →</button></div>
+    </form>
+  </div>
+</section>
+{% endblock %}
