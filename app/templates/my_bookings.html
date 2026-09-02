@@ -1,66 +1,61 @@
 {% extends "base.html" %}
-
-{% block title %}
-My Bookings | ArtisanLink
-{% endblock %}
-
+{% block title %}My Bookings | ArtisanLink{% endblock %}
 {% block content %}
-
 <section class="bookings-list-section">
     <div class="container">
         <header class="bookings-list-header">
-            <div>
-                <span class="artisan-dashboard-eyebrow">MY BOOKINGS</span>
-                <h1>Your booking requests</h1>
+            <div><span class="artisan-dashboard-eyebrow">MY BOOKINGS</span><h1>Your booking requests</h1></div>
+            <div class="bookings-header-actions">
+                <a href="{{ url_for('customer_dashboard') }}" class="hero-btn hero-btn-secondary">Back to dashboard <span class="ms-2">→</span></a>
+                <a href="{{ url_for('artisans') }}" class="hero-btn hero-btn-primary">Find an artisan <span class="ms-2">→</span></a>
             </div>
-            <a href="{{ url_for('artisans') }}" class="hero-btn hero-btn-secondary">
-                Find an artisan
-                <span class="ms-2">→</span>
-            </a>
         </header>
-
         {% if bookings %}
-            <div class="bookings-table-wrap">
-                <table class="bookings-table">
-                    <thead>
-                        <tr>
-                            <th>Artisan</th>
-                            <th>Service</th>
-                            <th>Date &amp; time</th>
-                            <th>Status</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for booking in bookings %}
-                            <tr>
-                                <td>
-                                    <a href="{{ url_for('artisan_profile', artisan_id=booking.artisan.id) }}">{{ booking.artisan.user.full_name }}</a>
-                                </td>
-                                <td>{{ booking.service.name }}</td>
-                                <td>{{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</td>
-                                <td><span class="al-status-badge al-status-{{ booking.status }}">{{ booking.status|capitalize }}</span></td>
-                                <td>
-                                    {% if booking.status == "pending" %}
-                                        <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.id) }}" onsubmit="return confirm('Cancel this booking request?');">
-                                            <button type="submit" class="al-dashboard-secondary-btn al-table-action">Cancel</button>
-                                        </form>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="bookings-table-wrap">
+            <table class="bookings-table">
+                <thead><tr><th>Artisan</th><th>Service</th><th>Date &amp; time</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td><a href="{{ url_for('artisan_profile', artisan_id=booking.artisan.id) }}">{{ booking.artisan.user.full_name }}</a></td>
+                    <td>{{ booking.service.name }}</td>
+                    <td>{{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</td>
+                    <td><span class="al-status-badge al-status-{{ booking.status }}">{{ booking.status|replace('_', ' ')|capitalize }}</span></td>
+                    <td class="al-table-actions">
+                        {% if booking.status == 'pending' %}
+                            <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.id) }}" onsubmit="return confirm('Cancel this booking request?');"><button type="submit" class="al-dashboard-secondary-btn al-table-action">Cancel</button></form>
+                        {% elif booking.status == 'awaiting_customer_confirmation' %}
+                            <div class="completion-confirmation">
+                                <strong>Was the work completed?</strong>
+                                <div class="completion-actions">
+                                    <form method="POST" action="{{ url_for('confirm_completion', booking_id=booking.id) }}"><input type="hidden" name="action" value="completed"><button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-accept">Yes, completed</button></form>
+                                    <form method="POST" action="{{ url_for('confirm_completion', booking_id=booking.id) }}"><input type="hidden" name="action" value="not_completed"><button type="submit" class="al-dashboard-secondary-btn al-table-action al-action-decline">No, not completed</button></form>
+                                </div>
+                            </div>
+                        {% elif booking.status == 'completed' %}
+                            {% set existing_review = booking.artisan.id %}
+                            <button type="button" class="al-dashboard-secondary-btn al-table-action" data-bs-toggle="modal" data-bs-target="#reviewModal{{ booking.id }}">Leave a review</button>
+                            <div class="modal fade" id="reviewModal{{ booking.id }}" tabindex="-1" aria-labelledby="reviewModalLabel{{ booking.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered"><div class="modal-content al-modal-content"><form method="POST" action="{{ url_for('submit_review', booking_id=booking.id) }}">
+                                    <div class="modal-header"><h5 class="modal-title" id="reviewModalLabel{{ booking.id }}">Review {{ booking.artisan.user.full_name }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                                    <div class="modal-body"><div class="mb-3"><label class="form-label" for="rating{{ booking.id }}">Rating</label><select class="form-select" id="rating{{ booking.id }}" name="rating" required><option value="">Choose a rating</option><option value="5">5 — Excellent</option><option value="4">4 — Very good</option><option value="3">3 — Good</option><option value="2">2 — Fair</option><option value="1">1 — Poor</option></select></div><div><label class="form-label" for="comment{{ booking.id }}">Comment</label><textarea class="form-control" id="comment{{ booking.id }}" name="comment" rows="4" placeholder="Tell other customers about your experience."></textarea></div></div>
+                                    <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn al-modal-submit">Submit review</button></div>
+                                </form></div></div>
+                            </div>
+                        {% elif booking.status == 'declined' %}
+                            <span class="al-booking-muted">No action required</span>
+                        {% elif booking.status == 'not_completed' %}
+                            <span class="al-booking-muted">You reported that the work was not completed.</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
-            <div class="artisan-empty-state">
-                <div class="artisan-empty-icon">+</div>
-                <h3>No bookings yet</h3>
-                <p>Once you request a service, it will show up here.</p>
-                <a href="{{ url_for('artisans') }}" class="artisan-primary-action">Find an artisan <span>→</span></a>
-            </div>
+        <div class="artisan-empty-state"><div class="artisan-empty-icon">+</div><h3>No bookings yet</h3><p>Once you request a service, it will show up here.</p><a href="{{ url_for('artisans') }}" class="artisan-primary-action">Find an artisan <span>→</span></a></div>
         {% endif %}
     </div>
 </section>
-
 {% endblock %}
