@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Negotiate Booking | ArtisanLink{% endblock %}
+{% block content %}
+<section class="booking-form-section">
+    <div class="container">
+        <a href="{{ url_for('artisan_bookings') }}" class="artisan-back-link">← Back to booking requests</a>
+        <div class="booking-form-card">
+            <div class="booking-form-summary">
+                <span class="artisan-dashboard-eyebrow">NEGOTIATE BOOKING</span>
+                <h1>{{ booking.service.name }}</h1>
+                <p class="booking-form-artisan">Customer: {{ booking.customer.full_name }}</p>
+                <dl class="booking-summary-details">
+                    <div><dt>Listed price</dt><dd>₦{{ "{:,.0f}".format(booking.service.price) }}</dd></div>
+                    <div><dt>Requested date</dt><dd>{{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</dd></div>
+                </dl>
+                <p class="booking-form-description">Suggest a price and/or time that works better for you. The customer will be able to accept or reject your proposal.</p>
+            </div>
+            <form method="POST" class="booking-form">
+                <div class="mb-3">
+                    <label for="proposed_price" class="form-label">Proposed price (₦)</label>
+                    <input type="number" min="1" step="0.01" class="form-control" id="proposed_price" name="proposed_price" value="{{ booking.service.price }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="proposed_date" class="form-label">Proposed date and time</label>
+                    <input type="datetime-local" class="form-control" id="proposed_date" name="proposed_date" value="{{ booking.booking_date.strftime('%Y-%m-%dT%H:%M') }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message <span class="text-muted">(optional)</span></label>
+                    <textarea class="form-control" id="message" name="message" rows="4" maxlength="1000" placeholder="Explain the proposed price or schedule."></textarea>
+                </div>
+                <button type="submit" class="hero-btn hero-btn-primary booking-submit-btn">Send proposal <span class="ms-2">→</span></button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
