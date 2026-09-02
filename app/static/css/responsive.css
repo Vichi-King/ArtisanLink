@@ -1,32 +1,57 @@
-/* ArtisanLink responsive layer. Loaded after style.css so existing desktop design stays intact. */
-
+/* ArtisanLink responsive layer. Loaded after style.css so the desktop design stays intact. */
 * { box-sizing: border-box; }
-img { max-width: 100%; }
+html { scroll-behavior: smooth; }
+img { max-width: 100%; height: auto; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+
+.al-skip-link { position: fixed; left: 12px; top: -60px; z-index: 9999; padding: 10px 14px; background: #111; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; }
+.al-skip-link:focus { top: 12px; }
+
+.al-site-footer { margin-top: 70px; padding: 48px 0 20px; background: #111; color: #ddd; }
+.al-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+.al-footer-brand { display: inline-block; margin-bottom: 10px; color: #fff; font-size: 1.45rem; font-weight: 800; text-decoration: none; }
+.al-footer-grid p { max-width: 360px; margin: 0; color: #aaa; line-height: 1.7; }
+.al-footer-grid h2 { margin: 0 0 14px; color: #fff; font-size: .78rem; letter-spacing: 1.5px; text-transform: uppercase; }
+.al-footer-grid a, .al-footer-help { display: block; margin: 0 0 9px; padding: 0; border: 0; background: transparent; color: #bbb; text-decoration: none; font: inherit; cursor: pointer; }
+.al-footer-grid a:hover, .al-footer-help:hover { color: #fff; }
+.al-footer-bottom { display: flex; justify-content: space-between; gap: 20px; margin-top: 38px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.12); color: #888; font-size: .78rem; }
+.al-back-top { position: fixed; right: 20px; bottom: 20px; z-index: 1000; width: 44px; height: 44px; border: 0; border-radius: 50%; background: #111; color: #fff; font-size: 1.2rem; opacity: 0; visibility: hidden; transform: translateY(10px); transition: .2s ease; box-shadow: 0 8px 25px rgba(0,0,0,.18); cursor: pointer; }
+.al-back-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+.al-back-top:hover { background: #f2c94c; color: #111; }
 
 /* Shared account / booking helpers */
 .bookings-header-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
 .al-dashboard-back-btn { background: #111 !important; border-color: #111 !important; color: #fff !important; }
 .al-dashboard-back-btn:hover, .al-dashboard-back-btn:focus { background: #f2c94c !important; border-color: #f2c94c !important; color: #111 !important; }
-
-.artisan-account-danger { margin-top: 28px; padding: 28px 30px; border: 1px solid rgba(180, 30, 30, .18); border-radius: 18px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.artisan-account-danger { margin-top: 28px; padding: 28px 30px; border: 1px solid rgba(180,30,30,.18); border-radius: 18px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .artisan-account-danger span { font-size: .72rem; font-weight: 800; letter-spacing: 1.8px; color: #a33; }
 .artisan-account-danger h2 { margin: 5px 0 6px; font-size: 1.15rem; }
 .artisan-account-danger p { margin: 0; color: #777; line-height: 1.55; }
 .al-danger-outline-btn { flex: 0 0 auto; border: 1px solid #b42318; background: transparent; color: #b42318; border-radius: 10px; padding: 11px 18px; font-weight: 700; }
 .al-danger-outline-btn:hover { background: #b42318; color: #fff; }
 .al-danger-submit { background: #b42318 !important; border-color: #b42318 !important; color: #fff !important; }
-
 .al-booking-waiting, .al-booking-done, .al-booking-not-done, .al-booking-muted { display: inline-block; max-width: 230px; font-size: .82rem; line-height: 1.4; color: #777; }
 .al-booking-done { color: #287a45; font-weight: 700; }
 .al-booking-not-done { color: #a06000; }
 .completion-confirmation strong { display: block; margin-bottom: 8px; font-size: .84rem; }
 .completion-actions { display: flex; gap: 7px; flex-wrap: wrap; }
 
+/* Forms: keep controls easy to tap and prevent accidental horizontal overflow. */
+.form-control, .form-select, textarea, input, select { max-width: 100%; }
+.form-control, .form-select { min-height: 44px; }
+textarea.form-control { min-height: 120px; }
+
+@media (max-width: 1199.98px) {
+    .navbar-nav { gap: 0; }
+    .navbar .nav-link { white-space: nowrap; }
+}
+
 @media (max-width: 991.98px) {
     .navbar .container { padding-left: 18px; padding-right: 18px; }
     .navbar-collapse { padding: 10px 0 14px; }
-    .navbar-nav { gap: 2px; }
-    .navbar .nav-link { padding: 10px 8px !important; }
+    .navbar-nav { align-items: stretch !important; gap: 2px; }
+    .navbar .nav-link { padding: 10px 8px !important; white-space: normal; }
+    .al-nav-user { border-top: 1px solid rgba(255,255,255,.1); margin-top: 5px; }
     .artisan-dashboard { overflow-x: hidden; }
     .artisan-dashboard-grid { grid-template-columns: 1fr !important; }
     .artisan-dashboard-hero { gap: 20px; }
@@ -42,6 +67,8 @@ img { max-width: 100%; }
     .navbar { min-height: 64px; }
     .navbar-logo { width: 112px; }
     .navbar-toggler { padding: 6px 8px; }
+    .hero-section, .hero, .page-hero { min-height: auto; }
+    .hero-title { max-width: 100%; }
     .artisan-dashboard { padding-top: 36px; padding-bottom: 45px; }
     .artisan-dashboard-hero { display: flex; flex-direction: column; align-items: stretch; }
     .artisan-dashboard-intro h1 { font-size: clamp(2.25rem, 11vw, 3.2rem); line-height: 1.02; }
@@ -85,6 +112,10 @@ img { max-width: 100%; }
     .public-artisan-grid { grid-template-columns: 1fr !important; }
     .public-artisan-service-list li { flex-direction: column; align-items: stretch !important; gap: 12px; }
     .public-artisan-book-btn { text-align: center; }
+    .al-footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .al-footer-grid > div:first-child { grid-column: 1 / -1; }
+    .al-footer-bottom { flex-direction: column; gap: 8px; }
+    .al-back-top { right: 14px; bottom: 14px; width: 42px; height: 42px; }
 }
 
 @media (max-width: 420px) {
@@ -93,4 +124,6 @@ img { max-width: 100%; }
     .artisan-avatar { width: 48px; height: 48px; }
     .artisan-service-item { padding: 12px !important; }
     .al-dashboard-secondary-btn, .artisan-primary-action, .artisan-secondary-action { min-height: 44px; }
+    .al-footer-grid { grid-template-columns: 1fr; }
+    .al-footer-grid > div:first-child { grid-column: auto; }
 }
