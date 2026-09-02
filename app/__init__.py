@@ -13,8 +13,10 @@ def create_app():
     db.init_app(app)
 
     from .routes import register_routes
+    from .profile_routes import register_profile_routes
 
     register_routes(app)
+    register_profile_routes(app)
 
     with app.app_context():
         db.create_all()
